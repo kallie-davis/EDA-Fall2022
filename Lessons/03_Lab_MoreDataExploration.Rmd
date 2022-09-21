@@ -3,6 +3,8 @@ title: "Lab 3 - Data Types | Exploring Datasets"
 author: "Environmental Data Analytics | John Fay and Luana Lima "
 date: "Fall 2022"
 output: pdf_document
+editor_options: 
+  chunk_output_type: inline
 ---
 
 ```{r setup, include=FALSE}
@@ -41,6 +43,7 @@ vector3 <- c(TRUE,TRUE,TRUE,FALSE,TRUE,FALSE) #logical vector
 vector3
 
 vector1[3] # 
+vector1[3:5]
 
 # Matrices ----
 matrix1 <- matrix(1:20, nrow = 5,ncol = 4) # 
@@ -64,22 +67,25 @@ matrix4 <- matrix(cells, nrow = 2, ncol = 2, byrow = TRUE,
   dimnames = list(rnames, cnames)) # 
 matrix4
 
-# Lists ---- 
+# Lists ---- you can store whatever you want in lists; you can retreive items by position or by name
+#double brackets is the syntax for getting the position of your item
 list1 <- list(name = "Maria", mynumbers = vector1, mymatrix = matrix1, age = 5.3); list1
 list1[[2]]
 
-# Data Frames ----
+# Data Frames ---- every column is a vector; all lists have to have the same number of elements (NA is a placeholder)
 d <- c(1, 2, 3, 4) # What type of vector?
 e <- c("red", "white", "red", NA) # What type of vector?
 f <- c(TRUE, TRUE, TRUE, FALSE) # What type of vector?
 dataframe1 <- data.frame(d,e,f) #
-names(dataframe1) <- c("ID","Color","Passed"); View(dataframe1) # 
+names(dataframe1) <- c("ID","Color","Passed"); View(dataframe1) # creating new column names
 
-dataframe1[1:2,] # 
+dataframe1[1:2,] # row position (rows 1 through 2)
 dataframe1[c("ID","Passed")] # 
 dataframe1$ID
 
 ```
+
+ctrl alt i to add new code chunk
 
 Question: How do the different types of data appear in the Environment tab?
 
@@ -94,12 +100,17 @@ Question: In the R chunk below, write "dataframe1\$". Press `tab` after you type
 Find a ten-day forecast of temperatures (Fahrenheit) for Durham, North Carolina. Create two vectors, one representing the high temperature on each of the ten days and one representing the low.
 
 ```{r DataExercise-1a}
+vector_high <- c(93,93,73,78,85,82,78,75,73,71)
+vector_low <- c(65,53,48,59,61,54,51,51,52,55)
 
 ```
 
 Now, create two additional vectors that include the ten-day forecast for the high and low temperatures in Celsius. Use a function to create the two new vectors from your existing ones in Fahrenheit.
 
 ```{r DataExercise-1b}
+celcius_conversion_high <- (vector_high - 32) * 5/9 
+celcius_conversion_low <- (vector_low - 32) * 5/9 
+#lapply allows you to conduct sd on dataframe (lapply(df,sd))
 
 ```
 
@@ -159,8 +170,8 @@ date_obj_today
 #Ex_3 - on your own...
 str_juneteenth <- "19 June 1865"
 #Since the format is month-day-year we will use function mdy()
-#date_juneteenth <- ()
-#date_juneteenth
+date_juneteenth <- dmy(str_juneteenth)
+date_juneteenth
 ```
 
 ```{r DateExercise2}
@@ -171,7 +182,7 @@ date_obj_past
 
 #Build a function to fix year that is more general than the one discussed in the lesson
 fix.early.dates <- function(d, cutoff) {
-       m <- year(d) %% 100  #operator %% is a modular division i.e. integer-divide year(d) by 100 and returns the remainder 
+       m <- year(d) %% 100  #operator %% is a modular division i.e. integer-divide year(d) by 100 and returns the remainder; m gives the two digit year
        year(d) <- ifelse(m > cutoff, 1900+m, 2000+m)  #this will update year(d), year() is a function that returns the year for a data object
        return(d)
 }
