@@ -1,6 +1,6 @@
 ---
 title: "Assignment 4: Data Wrangling"
-author: "Kallie Davis"
+author: "Student Name"
 output: pdf_document
 geometry: margin=2.54cm
 ---
@@ -33,31 +33,8 @@ The completed exercise is due on Friday, Oct7th @ 5:00pm.
 
 ```{r, message = FALSE}
 #1
-library(tidyverse)
-library(lubridate)
-
-rainfall.data <- read.csv("../Data/Raw/pr_1901_2016_BRA.csv", stringsAsFactors = TRUE)
-temperature.data <- read.csv("../Data/Raw/tas_1901_2016_BRA.csv", stringsAsFactors = TRUE)
-flow.data <- read.csv("../Data/Raw/USGS_Site02085000_Flow_Raw.csv", stringsAsFactors = TRUE)
-windspeed.data <- read.csv("../Data/Raw/Wind_Speed_PortArthurTX.csv", stringsAsFactors = TRUE)
 
 #2
-dim(rainfall.data)
-colnames(rainfall.data)
-str(rainfall.data)
-
-dim(temperature.data)
-colnames(temperature.data)
-str(temperature.data)
-
-dim(flow.data)
-colnames(flow.data)
-str(flow.data)
-
-dim(wind.speed)
-colnames(wind.speed)
-str(wind.speed)
-
 ```
 
 ## Wrangle individual datasets to create processed files.
@@ -67,23 +44,7 @@ str(wind.speed)
 6. Save all four processed datasets in the Processed folder. Use the same file names as the raw files but replace "raw" with "processed".
 
 ```{r}
-#3 
-#change flow.data date
-flow.data$datetime <- as.Date(flow.data$datetime, format = "%m/%d/%y")
-
-flow.data$datetime <- format(flow.data$datetime, "%y%m%d")
-create.early.dates <- (function(d) {
-       paste0(ifelse(d > 100126,"19","20"),d)
-       })
-flow.data$datetime <- create.early.dates(flow.data$datetime)
-flow.data$datetime <- as.Date(flow.data$datetime, format ="%Y%m%d")
-
-flow.data$datetime <- as.Date(flow.data$datetime, format = "%Y/%m/%d")
-
-
-
-#change wind.speed date
-windspeed.data$DATE <- as.Date(windspeed.data$DATE, format = "%YYYY-%mm")
+#3
 
 #4
 
