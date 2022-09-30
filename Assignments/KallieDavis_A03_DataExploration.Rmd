@@ -20,6 +20,11 @@ This exercise accompanies the lessons in Environmental Data Analytics on Data Ex
 
 The completed exercise is due on Sept 30th.
 
+```{r}
+#install.packages("formatR")
+knitr::opts_chunk$set(tidy.opts=list(width.cutoff=80), tidy=TRUE)
+```
+
 ## Set up your R session
 
 1.  Check your working directory, load necessary packages (tidyverse), and upload two datasets: the ECOTOX neonicotinoid dataset (ECOTOX_Neonicotinoids_Insects_raw.csv) and the Niwot Ridge NEON dataset for litter and woody debris (NEON_NIWO_Litter_massdata_2018-08_raw.csv). Name these datasets "Neonics" and "Litter", respectively. Be sure to include the subcommand to read strings in as factors.
