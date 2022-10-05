@@ -68,8 +68,8 @@ print(O3plot4)
 
 Notice that some aspects of your graph have not been adjusted, including: 
 
-* text size
-* axis label colors
+* text size - default is 11
+* axis label colors - default is black
 * legend position and justification
 
 If you would like to set a common theme across all plots in your analysis session, you may define a theme and call up that theme for each graph. This eliminates the need to add multiple lines of code in each plot. 
@@ -86,7 +86,7 @@ O3plot5 <- ggplot(EPAair) +
   mytheme
 print(O3plot5)  
 
-theme_set(mytheme)
+theme_set(mytheme) #changes default theme
 
 O3plot6 <- ggplot(EPAair) +
   geom_point(aes(x = Date, y = Ozone))
@@ -102,8 +102,8 @@ While the theme allows us to set multiple aspects of plots, ggplot allows us to 
 O3plot7 <- ggplot(EPAair, aes(x = Date, y = Ozone)) +
   geom_hline(yintercept = 50, lty = 2) +
   geom_hline(yintercept = 100, lty = 2) +
-  geom_point(alpha = 0.5, size = 1.5) +
-  geom_text(x = as.Date("2020-01-01"), y = 45, label = "good", hjust = 1, fontface = "bold") +   # hjust = 1 means left align
+  geom_point(alpha = 0.5, size = 1.5) + #alpha sets the transparency of the points
+  geom_text(x = as.Date("2020-01-01"), y = 45, label = "good", hjust = 1, fontface = "bold") +   # hjust = 1 means left align (horizontal justification)
   geom_text(x = as.Date("2020-01-01"), y = 95, label = "moderate", hjust = 1, fontface = "bold") +
   geom_text(x = as.Date("2020-01-01"), y = 120, label = "unhealthy (sensitive groups)", hjust = 1, fontface = "bold") +
   scale_x_date(limits = as.Date(c("2018-01-01", "2019-12-31")), 
