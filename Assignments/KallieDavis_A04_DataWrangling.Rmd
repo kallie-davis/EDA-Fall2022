@@ -36,27 +36,27 @@ The completed exercise is due on Friday, Oct7th @ 5:00pm.
 library(tidyverse)
 library(lubridate)
 
-EPAair_O3_NC2018_raw <- read.csv("../Data/Raw/EPAair_O3_NC2018_raw.csv", stringsAsFactors = TRUE)
-EPAair_O3_NC2019_raw <- read.csv("../Data/Raw/EPAair_O3_NC2019_raw.csv", stringsAsFactors = TRUE)
-EPAair_PM25_NC2018_raw <- read.csv("../Data/Raw/EPAair_PM25_NC2018_raw.csv", stringsAsFactors = TRUE)
-EPAair_PM25_NC2019_raw <- read.csv("../Data/Raw/EPAair_PM25_NC2019_raw.csv", stringsAsFactors = TRUE)
+EPAair_O3_NC2018 <- read.csv("../Data/Raw/EPAair_O3_NC2018_raw.csv", stringsAsFactors = TRUE)
+EPAair_O3_NC2019 <- read.csv("../Data/Raw/EPAair_O3_NC2019_raw.csv", stringsAsFactors = TRUE)
+EPAair_PM25_NC2018 <- read.csv("../Data/Raw/EPAair_PM25_NC2018_raw.csv", stringsAsFactors = TRUE)
+EPAair_PM25_NC2019 <- read.csv("../Data/Raw/EPAair_PM25_NC2019_raw.csv", stringsAsFactors = TRUE)
 
 #2
-dim(EPAair_O3_NC2018_raw)
-colnames(EPAair_O3_NC2018_raw)
-str(EPAair_O3_NC2018_raw)
+dim(EPAair_O3_NC2018)
+colnames(EPAair_O3_NC2018)
+str(EPAair_O3_NC2018)
 
-dim(EPAair_O3_NC2019_raw)
-colnames(EPAair_O3_NC2019_raw)
-str(EPAair_O3_NC2019_raw)
+dim(EPAair_O3_NC2019)
+colnames(EPAair_O3_NC2019)
+str(EPAair_O3_NC2019)
 
-dim(EPAair_PM25_NC2018_raw)
-colnames(EPAair_PM25_NC2018_raw)
-str(EPAair_PM25_NC2018_raw)
+dim(EPAair_PM25_NC2018)
+colnames(EPAair_PM25_NC2018)
+str(EPAair_PM25_NC2018)
 
-dim(EPAair_PM25_NC2019_raw)
-colnames(EPAair_PM25_NC2019_raw)
-str(EPAair_PM25_NC2019_raw)
+dim(EPAair_PM25_NC2019)
+colnames(EPAair_PM25_NC2019)
+str(EPAair_PM25_NC2019)
 ```
 
 ## Wrangle individual datasets to create processed files.
@@ -67,8 +67,16 @@ str(EPAair_PM25_NC2019_raw)
 
 ```{r}
 #3
+EPAair_O3_NC2018$Date <- as.Date(EPAair_O3_NC2018$Date, format = "%m/%d/%y")
+EPAair_O3_NC2019$Date <- as.Date(EPAair_O3_NC2019$Date, format = "%m/%d/%y")
+EPAair_PM25_NC2018$Date <- as.Date(EPAair_PM25_NC2018$Date, format = "%m/%d/%y")
+EPAair_PM25_NC2019$Date <- as.Date(EPAair_PM25_NC2019$Date, format = "%m/%d/%y")
 
 #4
+EPAair_O3_NC2018 <- select(EPAair_O3_NC2018, Date, DAILY_AQI_VALUE, Site.Name, AQS_PARAMETER_DESC, COUNTY, SITE_LATITUDE, SITE_LONGITUDE)
+EPAair_O3_NC2019 <- select(EPAair_O3_NC2018, Date, DAILY_AQI_VALUE, Site.Name, AQS_PARAMETER_DESC, COUNTY, SITE_LATITUDE, SITE_LONGITUDE)
+EPAair_PM25_NC2018 <- select(EPAair_O3_NC2018, Date, DAILY_AQI_VALUE, Site.Name, AQS_PARAMETER_DESC, COUNTY, SITE_LATITUDE, SITE_LONGITUDE)
+EPAair_PM25_NC2019 <- select(EPAair_O3_NC2018, Date, DAILY_AQI_VALUE, Site.Name, AQS_PARAMETER_DESC, COUNTY, SITE_LATITUDE, SITE_LONGITUDE)
 
 #5
 
