@@ -36,10 +36,10 @@ The completed exercise is due on Friday, Oct7th @ 5:00pm.
 library(tidyverse)
 library(lubridate)
 
-rainfall.data <- read.csv("../Data/Raw/pr_1901_2016_BRA.csv", stringsAsFactors = TRUE)
-temperature.data <- read.csv("../Data/Raw/tas_1901_2016_BRA.csv", stringsAsFactors = TRUE)
-flow.data <- read.csv("../Data/Raw/USGS_Site02085000_Flow_Raw.csv", stringsAsFactors = TRUE)
-windspeed.data <- read.csv("../Data/Raw/Wind_Speed_PortArthurTX.csv", stringsAsFactors = TRUE)
+EPAair_O3_NC2018_raw <- read.csv("../Data/Raw/EPAair_O3_NC2018_raw.csv", stringsAsFactors = TRUE)
+EPAair_O3_NC2019_raw <- read.csv("../Data/Raw/EPAair_O3_NC2019_raw.csv", stringsAsFactors = TRUE)
+EPAair_PM25_NC2018_raw <- read.csv("../Data/Raw/EPAair_PM25_NC2018_raw.csv", stringsAsFactors = TRUE)
+EPAair_PM25_NC2019_raw <- read.csv("../Data/Raw/EPAair_PM25_NC2019_raw.csv", stringsAsFactors = TRUE)
 
 #2
 dim(rainfall.data)
