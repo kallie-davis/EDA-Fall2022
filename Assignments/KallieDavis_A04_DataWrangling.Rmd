@@ -8,9 +8,9 @@ geometry: margin=2.54cm
 ```{r setup, include=FALSE}
 #This code chunk will tidy your knit PDF files, wrapping long code lines
 #For it to work, the "formatR" package needs to be installed
-
+library(knitr)
 #install.packages('formatR')
-knitr::opts_chunk$set(tidy.opts=list(width.cutoff=80), tidy=TRUE)
+knitr::opts_chunk$set(tidy.opts=list(width.cutoff=70), tidy=TRUE)
 ```
 
 ## OVERVIEW
@@ -35,6 +35,7 @@ The completed exercise is due on Friday, Oct7th @ 5:00pm.
 #1
 library(tidyverse)
 library(lubridate)
+library(formatR)
 
 EPAair_O3_NC2018 <- read.csv("../Data/Raw/EPAair_O3_NC2018_raw.csv", stringsAsFactors = TRUE)
 EPAair_O3_NC2019 <- read.csv("../Data/Raw/EPAair_O3_NC2019_raw.csv", stringsAsFactors = TRUE)
@@ -67,20 +68,29 @@ str(EPAair_PM25_NC2019)
 
 ```{r}
 #3
-EPAair_O3_NC2018$Date <- as.Date(EPAair_O3_NC2018$Date, format = "%m/%d/%y")
-EPAair_O3_NC2019$Date <- as.Date(EPAair_O3_NC2019$Date, format = "%m/%d/%y")
-EPAair_PM25_NC2018$Date <- as.Date(EPAair_PM25_NC2018$Date, format = "%m/%d/%y")
-EPAair_PM25_NC2019$Date <- as.Date(EPAair_PM25_NC2019$Date, format = "%m/%d/%y")
+EPAair_O3_NC2018$Date <- as.Date(EPAair_O3_NC2018$Date, format = "%m/%d/%Y")
+EPAair_O3_NC2019$Date <- as.Date(EPAair_O3_NC2019$Date, format = "%m/%d/%Y")
+EPAair_PM25_NC2018$Date <- as.Date(EPAair_PM25_NC2018$Date, format = "%m/%d/%Y")
+EPAair_PM25_NC2019$Date <- as.Date(EPAair_PM25_NC2019$Date, format = "%m/%d/%Y")
 
 #4
 EPAair_O3_NC2018 <- select(EPAair_O3_NC2018, Date, DAILY_AQI_VALUE, Site.Name, AQS_PARAMETER_DESC, COUNTY, SITE_LATITUDE, SITE_LONGITUDE)
-EPAair_O3_NC2019 <- select(EPAair_O3_NC2018, Date, DAILY_AQI_VALUE, Site.Name, AQS_PARAMETER_DESC, COUNTY, SITE_LATITUDE, SITE_LONGITUDE)
-EPAair_PM25_NC2018 <- select(EPAair_O3_NC2018, Date, DAILY_AQI_VALUE, Site.Name, AQS_PARAMETER_DESC, COUNTY, SITE_LATITUDE, SITE_LONGITUDE)
-EPAair_PM25_NC2019 <- select(EPAair_O3_NC2018, Date, DAILY_AQI_VALUE, Site.Name, AQS_PARAMETER_DESC, COUNTY, SITE_LATITUDE, SITE_LONGITUDE)
+EPAair_O3_NC2019 <- select(EPAair_O3_NC2019, Date, DAILY_AQI_VALUE, Site.Name, AQS_PARAMETER_DESC, COUNTY, SITE_LATITUDE, SITE_LONGITUDE)
+EPAair_PM25_NC2018 <- select(EPAair_PM25_NC2018, Date, DAILY_AQI_VALUE, Site.Name, AQS_PARAMETER_DESC, COUNTY, SITE_LATITUDE, SITE_LONGITUDE)
+EPAair_PM25_NC2019 <- select(EPAair_PM25_NC2019, Date, DAILY_AQI_VALUE, Site.Name, AQS_PARAMETER_DESC, COUNTY, SITE_LATITUDE, SITE_LONGITUDE)
 
 #5
+EPAair_PM25_NC2018$AQS_PARAMETER_DESC <- (EPAair_PM25_NC2018$AQS_PARAMETER_DESC="PM2.5") %>% 
+  as.factor()
+  
+EPAair_PM25_NC2019$AQS_PARAMETER_DESC <- (EPAair_PM25_NC2019$AQS_PARAMETER_DESC="PM2.5") %>% 
+  as.factor()
 
 #6
+write.csv(EPAair_O3_NC2018, row.names = FALSE, file = "../Data/Processed/EPAair_O3_NC2018_processed.csv")
+write.csv(EPAair_O3_NC2019, row.names = FALSE, file = "../Data/Processed/EPAair_O3_NC2019_processed.csv")
+write.csv(EPAair_PM25_NC2018, row.names = FALSE, file = "../Data/Processed/EPAair_PM25_NC2018_processed.csv")
+write.csv(EPAair_PM25_NC2019, row.names = FALSE, file = "../Data/Processed/EPAair_PM25_NC2019_processed.csv")
 
 ```
 
@@ -100,15 +110,25 @@ EPAair_PM25_NC2019 <- select(EPAair_O3_NC2018, Date, DAILY_AQI_VALUE, Site.Name,
 
 ```{r}
 #7
+EPAair_O3_PM25_1819 <- rbind(EPAair_O3_NC2018, EPAair_O3_NC2019, EPAair_PM25_NC2018, EPAair_PM25_NC2019)
 
 #8
+EPAair_O3_PM25_1819_filtered <- EPAair_O3_PM25_1819 %>% 
+  filter(Site.Name %in% c("Linville Falls", "Durham Armory", "Leggett", "Hattie Avenue", "Clemmons Middle", "Mendenhall School", "Frying Pan Mountain", "West Johnston Co.", "Garinger High School", "Castle Hayne", "Pitt Agri. Center", "Bryson City", "Millbrook School")) %>% 
+  group_by(Date, Site.Name, AQS_PARAMETER_DESC, COUNTY) %>% 
+  dplyr::summarise(DAILY_AQI_VALUE = mean(DAILY_AQI_VALUE),
+            SITE_LATITUDE = mean(SITE_LATITUDE), 
+            SITE_LONGITUDE = mean(SITE_LONGITUDE)) %>% 
+  mutate(Month = month(Date), Year = year(Date))
 
 #9
+EPAair_03_PM25_1819_spread <- pivot_wider(EPAair_O3_PM25_1819_filtered, names_from =AQS_PARAMETER_DESC, values_from = DAILY_AQI_VALUE)
 
 #10
+dim(EPAair_03_PM25_1819_spread)
 
 #11
-
+write.csv(EPAair_03_PM25_1819_spread, row.names = FALSE, file = "../Data/Processed/EPAair_O3_PM25_NC1718_Processed.csv")
 ```
 
 
@@ -119,13 +139,19 @@ EPAair_PM25_NC2019 <- select(EPAair_O3_NC2018, Date, DAILY_AQI_VALUE, Site.Name,
 
 ```{r}
 #12a
+EPAair_03_PM25_NC1718_summary <- EPAair_03_PM25_1819_spread %>% 
+  group_by(Site.Name, Month, Year) %>% 
+  dplyr::summarise(Mean_Ozone = mean(Ozone), Mean_PM2.5 = mean(PM2.5)) 
 
 #12b
+EPAair_03_PM25_NC1718_summary_drop.na <- EPAair_03_PM25_NC1718_summary %>% 
+  drop_na(Mean_Ozone, Mean_PM2.5)
 
 #13
+dim(EPAair_03_PM25_NC1718_summary_drop.na)
 
 ```
 
 14. Why did we use the function `drop_na` rather than `na.omit`?
 
-> Answer: 
+> Answer: drop_na removes rows which contain missing values in specified columns in the dataset; it is part of the tidyr package in R. na.omit removes rows which contain missing values in any column. 
