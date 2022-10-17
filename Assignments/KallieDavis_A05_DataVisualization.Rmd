@@ -46,9 +46,12 @@ library(tidyverse)
 library(lubridate)
 library(cowplot)
 
-NTL_LTER_Lake_ChemPhys_PeterPaul <- read.csv("../Data/Processed/NTL_LTER_Lake_ChemistryPhysics_PeterPaul_Processed.csv")
-#2 
+NTL_LTER_Lake_Chemistry_PeterPaul <-  read.csv("../Data/Processed/NTL-LTER_Lake_Chemistry_Nutrients_PeterPaul_Processed.csv", stringsAsFactors = TRUE)
+NEON_NIWO_Litter_mass_trap <- read.csv("../Data/Processed/NEON_NIWO_Litter_mass_trap_Processed.csv", stringsAsFactors = TRUE)
 
+#2 
+NTL_LTER_Lake_Chemistry_PeterPaul$sampledate <- as.Date(NTL_LTER_Lake_Chemistry_PeterPaul$sampledate, format = "%Y-%m-%d") 
+NEON_NIWO_Litter_mass_trap$collectDate <- as.Date(NEON_NIWO_Litter_mass_trap$collectDate, format = "%Y-%m-%d")
 ```
 ## Define your theme
 3. Build a theme and set it as your default theme.
