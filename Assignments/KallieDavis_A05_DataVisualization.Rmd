@@ -58,7 +58,10 @@ NEON_NIWO_Litter_mass_trap$collectDate <- as.Date(NEON_NIWO_Litter_mass_trap$col
 
 ```{r}
 #3
+mytheme <- theme_bw(base_size = 15) +
+  theme(axis.text = element_text(color = "maroon"))
 
+theme_set(mytheme)
 ```
 
 ## Create graphs
@@ -73,6 +76,14 @@ limits using `xlim()` and/or `ylim()`).
 
 ```{r}
 #4
+p <- ggplot(subset(NTL_LTER_Lake_Chemistry_PeterPaul, lakename == "Paul Lake" | lakename == "Peter Lake"),
+          aes(x = po4, y = tp_ug))+
+        geom_point(aes(color = lakename))+
+          labs(x = "Phosphate", y = "Total Phosphorus")+
+          geom_smooth(method = lm, color="black")+
+          xlim(1, 45)
+
+print(p)
 
 ```
 
@@ -87,7 +98,31 @@ see <https://r-lang.com/month-abb-in-r-with-example>
 
 ```{r}
 #5
+#temperature plot
+NTL_LTER_temp <- ggplot(NTL_LTER_Lake_Chemistry_PeterPaul)+
+  geom_boxplot(aes(x = factor(month), y = temperature_C, color = lakename))
 
+print(NTL_LTER_temp)
+
+#total phosphorus plot
+NTL_LTER_tp_ug <- ggplot(NTL_LTER_Lake_Chemistry_PeterPaul)+
+  geom_boxplot(aes(x = factor(month), y = tp_ug, color = lakename))
+
+print(NTL_LTER_tp_ug)
+
+#total nitrogen plot
+NTL_LTER_tn_ug <- ggplot(NTL_LTER_Lake_Chemistry_PeterPaul)+
+  geom_boxplot(aes(x = factor(month), y = tn_ug, color = lakename))
+
+print(NTL_LTER_tn_ug)
+
+#combined plot
+NTL_LTER_combined <- plot_grid(NTL_LTER_temp + theme(legend.position = "none"),
+                               NTL_LTER_tp_ug + theme(legend.position = "none"),
+                               NTL_LTER_tn_ug+ theme(legend.position = "none"), align = "vh")
+
+
+print(NTL_LTER_combined)
 ```
 
 Question: What do you observe about the variables of interest over seasons 
