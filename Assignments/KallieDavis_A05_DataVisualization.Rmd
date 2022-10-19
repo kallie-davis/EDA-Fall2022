@@ -119,7 +119,9 @@ print(NTL_LTER_tn_ug)
 #combined plot
 NTL_LTER_combined <- plot_grid(NTL_LTER_temp + theme(legend.position = "none"),
                                NTL_LTER_tp_ug + theme(legend.position = "none"),
-                               NTL_LTER_tn_ug+ theme(legend.position = "none"), align = "vh")
+                               NTL_LTER_tn_ug+ theme(legend.position = "none"), 
+                               nrow = 3, ncol = 1, 
+                               align = "v")
 
 
 print(NTL_LTER_combined)
@@ -128,7 +130,7 @@ print(NTL_LTER_combined)
 Question: What do you observe about the variables of interest over seasons 
 and between lakes? 
 
-> Answer: 
+> Answer: Total nitrogen and phosphorus have relatively consistent median values across seasons. Median total phosphorus and nitrogen values are greater in Peter lake.  
 
 6. [Niwot Ridge] Plot a subset of the litter dataset by displaying only the 
 "Needles" functional group. Plot the dry mass of needle litter by date and 
