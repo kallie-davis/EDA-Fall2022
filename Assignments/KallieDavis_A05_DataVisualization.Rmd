@@ -99,7 +99,7 @@ see <https://r-lang.com/month-abb-in-r-with-example>
 ```{r}
 #5
 #temperature plot
-NTL_LTER_temp <- ggplot(NTL_LTER_Lake_Chemistry_PeterPaul)+
+NTL_LTER_tp_temp <- ggplot(NTL_LTER_Lake_Chemistry_PeterPaul)+
   geom_boxplot(aes(x = factor(month), y = temperature_C, color = lakename))
 
 print(NTL_LTER_temp)
@@ -115,6 +115,10 @@ NTL_LTER_tn_ug <- ggplot(NTL_LTER_Lake_Chemistry_PeterPaul)+
   geom_boxplot(aes(x = factor(month), y = tn_ug, color = lakename))
 
 print(NTL_LTER_tn_ug)
+
+```
+
+```{r, fig.height=20, fig.width=10}
 
 #combined plot
 NTL_LTER_combined <- plot_grid(NTL_LTER_temp + theme(legend.position = "none"),
@@ -142,9 +146,19 @@ three facets rather than separated by color.
 
 ```{r}
 #6
+Needles_dryMass_CollectDate <- ggplot(subset(NEON_NIWO_Litter_mass_trap, functionalGroup == "Needles"))+
+        geom_point(aes(x = collectDate, y = dryMass,color = nlcdClass))+
+          labs(x = "Collect Date", y = "Dry Mass")
+
+print(Needles_dryMass_CollectDate)
 
 #7
+Needles_dryMass_CollectDate_faceted <- ggplot(subset(NEON_NIWO_Litter_mass_trap, functionalGroup == "Needles"))+
+        geom_point(aes(x = collectDate, y = dryMass))+
+          labs(x = "Collect Date", y = "Dry Mass")+
+     facet_wrap(vars(nlcdClass), nrow = 3)
 
+print(Needles_dryMass_CollectDate_faceted)
 
 ```
 Question: Which of these plots (6 vs. 7) do you think is more effective, and why? 
