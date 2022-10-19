@@ -96,6 +96,7 @@ An exploratory option to visualize the model fit is to use the function `plot`. 
 3. **Scale-Location.** Similar to the residuals vs. fitted graph, this will graph the squared standardized residuals by the fitted values.
 
 4. **Residuals vs. Leverage.** This graph will display potential outliers. The values that fall outside the dashed red lines (Cook's distance) are outliers for the model. Watch for drastic departures of the solid red line from horizontal - this is a sign of a poor model fit.
+      The problem is when we have both high leverage and high standard residuals (values outside of cook's distance)
 
 ```{r, fig.height = 3, fig.width = 4}
 par(mfrow = c(2,2), mar=c(4,4,4,4)) # dividing plot screen into 4 cells
@@ -188,6 +189,10 @@ corrplot.mixed(PeterPaulCorr, upper = "ellipse") # printing the upper diagonal o
 However, it is possible to over-parameterize a linear model. Adding additional explanatory variables takes away degrees of freedom, and if explanatory variables co-vary the interpretation can become overly complicated. Remember, an ideal statistical model balances simplicity and explanatory power! To help with this tradeoff, we can use the **Akaike's Information Criterion (AIC)** to compute a stepwise regression that either adds explanatory variables from the bottom up or removes explanatory variables from a full set of suggested options. The smaller the AIC value, the better. 
 
 Let's say we want to know which explanatory variables will allow us to best predict total phosphorus concentrations. Potential explanatory variables from the dataset could include depth, dissolved oxygen, temperature, PAR, total N concentration, and phosphate concentration.
+
+The smaller the AIC the better the model. This even applies to negative values (-250 would be better than -200)
+
+May better represent the data and have a lower R2. One metric will never perfectly represent the data. 
 
 ```{r}
 Paul.naomit <- PeterPaul.chem.nutrients %>%
