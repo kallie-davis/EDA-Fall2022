@@ -76,14 +76,15 @@ limits using `xlim()` and/or `ylim()`).
 
 ```{r}
 #4
-p <- ggplot(subset(NTL_LTER_Lake_Chemistry_PeterPaul, lakename == "Paul Lake" | lakename == "Peter Lake"),
+tp_phosphate_PeterPaul <- ggplot(subset(NTL_LTER_Lake_Chemistry_PeterPaul, lakename == "Paul Lake" | lakename == "Peter Lake"),
           aes(x = po4, y = tp_ug))+
         geom_point(aes(color = lakename))+
-          labs(x = expression("Phosphate ("~mu~"g)"), y = expression("Total Phosphate ("~mu~"g)"))+
+          labs(title = "Total Phosphorus by Phosphate for Peter and Paul Lakes", 
+               x = expression("Phosphate ("*mu*"g)"), y = expression("Total Phosphate                  ("*mu*"g)"), color = "Lake Name")+
           geom_smooth(method = lm, color="black")+
           xlim(1, 45)
 
-print(p)
+print(tp_phosphate_PeterPaul)
 
 ```
 
@@ -99,21 +100,29 @@ see <https://r-lang.com/month-abb-in-r-with-example>
 ```{r}
 #5
 #temperature plot
-NTL_LTER_tp_temp <- ggplot(NTL_LTER_Lake_Chemistry_PeterPaul)+
-  geom_boxplot(aes(x = factor(month), y = temperature_C, color = lakename))
+NTL_LTER_Lake_Chemistry_PeterPaul$month <- month.abb[NTL_LTER_Lake_Chemistry_PeterPaul$month]
+
+NTL_LTER_temp <- ggplot(NTL_LTER_Lake_Chemistry_PeterPaul)+
+  geom_boxplot(aes(x = forcats::fct_inorder(factor(month)), y = temperature_C, color = lakename))+
+  labs(x = "Month", y = "Temperature (°C)", color = "Lake Name")+
+  xlim("May","Jun","Jul","Aug","Sep","Oct","Nov")
 
 print(NTL_LTER_temp)
 
 #total phosphorus plot
 NTL_LTER_tp_ug <- ggplot(NTL_LTER_Lake_Chemistry_PeterPaul)+
-  geom_boxplot(aes(x = factor(month), y = tp_ug, color = lakename))
-
+  geom_boxplot(aes(x =  forcats::fct_inorder(factor(month)), y = tp_ug, color = lakename))+
+  labs(x = "Month", y = "Temperature (°C)", color = "Lake Name")+
+    xlim("May","Jun","Jul","Aug","Sep","Oct","Nov")
+  
 print(NTL_LTER_tp_ug)
 
 #total nitrogen plot
 NTL_LTER_tn_ug <- ggplot(NTL_LTER_Lake_Chemistry_PeterPaul)+
-  geom_boxplot(aes(x = factor(month), y = tn_ug, color = lakename))
-
+  geom_boxplot(aes(x = forcats::fct_inorder(factor(month)), y = tn_ug, color = lakename))+
+  labs(x = "Month", y = "Temperature (°C)", color = "Lake Name")+
+    xlim("May","Jun","Jul","Aug","Sep","Oct","Nov")
+  
 print(NTL_LTER_tn_ug)
 
 ```
