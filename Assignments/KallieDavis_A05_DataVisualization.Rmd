@@ -79,7 +79,7 @@ limits using `xlim()` and/or `ylim()`).
 p <- ggplot(subset(NTL_LTER_Lake_Chemistry_PeterPaul, lakename == "Paul Lake" | lakename == "Peter Lake"),
           aes(x = po4, y = tp_ug))+
         geom_point(aes(color = lakename))+
-          labs(x = "Phosphate", y = "Total Phosphorus")+
+          labs(x = expression("Phosphate ("~mu~"g)"), y = expression("Total Phosphate ("~mu~"g)"))+
           geom_smooth(method = lm, color="black")+
           xlim(1, 45)
 
