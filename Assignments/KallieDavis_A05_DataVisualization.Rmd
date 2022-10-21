@@ -46,12 +46,16 @@ library(tidyverse)
 library(lubridate)
 library(cowplot)
 
-NTL_LTER_Lake_Chemistry_PeterPaul <-  read.csv("../Data/Processed/NTL-LTER_Lake_Chemistry_Nutrients_PeterPaul_Processed.csv", stringsAsFactors = TRUE)
-NEON_NIWO_Litter_mass_trap <- read.csv("../Data/Processed/NEON_NIWO_Litter_mass_trap_Processed.csv", stringsAsFactors = TRUE)
+NTL_LTER_Lake_Chemistry_PeterPaul <-  read.csv("../Data/Processed/NTL-LTER_Lake_Chemistry_Nutrients_PeterPaul_Processed.csv", 
+                                               stringsAsFactors = TRUE)
+NEON_NIWO_Litter_mass_trap <- read.csv("../Data/Processed/NEON_NIWO_Litter_mass_trap_Processed.csv", 
+                                       stringsAsFactors = TRUE)
 
 #2 
-NTL_LTER_Lake_Chemistry_PeterPaul$sampledate <- as.Date(NTL_LTER_Lake_Chemistry_PeterPaul$sampledate, format = "%Y-%m-%d") 
-NEON_NIWO_Litter_mass_trap$collectDate <- as.Date(NEON_NIWO_Litter_mass_trap$collectDate, format = "%Y-%m-%d")
+NTL_LTER_Lake_Chemistry_PeterPaul$sampledate <- as.Date(NTL_LTER_Lake_Chemistry_PeterPaul$sampledate, 
+                                                        format = "%Y-%m-%d") 
+NEON_NIWO_Litter_mass_trap$collectDate <- as.Date(NEON_NIWO_Litter_mass_trap$collectDate, 
+                                                  format = "%Y-%m-%d")
 ```
 ## Define your theme
 3. Build a theme and set it as your default theme.
@@ -76,11 +80,15 @@ limits using `xlim()` and/or `ylim()`).
 
 ```{r}
 #4
-tp_phosphate_PeterPaul <- ggplot(subset(NTL_LTER_Lake_Chemistry_PeterPaul, lakename == "Paul Lake" | lakename == "Peter Lake"),
+tp_phosphate_PeterPaul <- ggplot(subset(NTL_LTER_Lake_Chemistry_PeterPaul, 
+                                        lakename == "Paul Lake" | 
+                                        lakename == "Peter Lake"),
           aes(x = po4, y = tp_ug))+
         geom_point(aes(color = lakename))+
           labs(title = "Total Phosphorus by Phosphate for Peter and Paul Lakes", 
-               x = expression("Phosphate ("*mu*"g)"), y = expression("Total Phosphate                  ("*mu*"g)"), color = "Lake Name")+
+               x = expression("Phosphate ("*mu*"g)"), 
+               y = expression("Total Phosphate ("*mu*"g)"), 
+               color = "Lake Name")+
           geom_smooth(method = lm, color="black")+
           xlim(1, 45)
 
@@ -103,24 +111,35 @@ see <https://r-lang.com/month-abb-in-r-with-example>
 NTL_LTER_Lake_Chemistry_PeterPaul$month <- month.abb[NTL_LTER_Lake_Chemistry_PeterPaul$month]
 
 NTL_LTER_temp <- ggplot(NTL_LTER_Lake_Chemistry_PeterPaul)+
-  geom_boxplot(aes(x = forcats::fct_inorder(factor(month)), y = temperature_C, color = lakename))+
-  labs(title = "Temperature by Month for Peter and Paul Lakes", x = "Month", y = "Temperature (°C)", color = "Lake Name")+
+  geom_boxplot(aes(x = forcats::fct_inorder(factor(month)), 
+                   y = temperature_C, color = lakename))+
+  labs(title = "Temperature by Month for Peter and Paul Lakes", 
+       x = "Month", 
+       y = "Temperature (°C)", 
+       color = "Lake Name")+
   xlim("May","Jun","Jul","Aug","Sep","Oct","Nov")
 
 print(NTL_LTER_temp)
 
 #total phosphorus plot
 NTL_LTER_tp_ug <- ggplot(NTL_LTER_Lake_Chemistry_PeterPaul)+
-  geom_boxplot(aes(x =  forcats::fct_inorder(factor(month)), y = tp_ug, color = lakename))+
-  labs(title = "Total Phosphorus by Month for Peter and Paul Lakes", x = "Month", y = "Temperature (°C)", color = "Lake Name")+
+  geom_boxplot(aes(x =  forcats::fct_inorder(factor(month)), 
+                   y = tp_ug, color = lakename))+
+  labs(title = "Total Phosphorus by Month for Peter and Paul Lakes", 
+       x = "Month", 
+       y = "Temperature (°C)", 
+       color = "Lake Name")+
     xlim("May","Jun","Jul","Aug","Sep","Oct","Nov")
   
 print(NTL_LTER_tp_ug)
 
 #total nitrogen plot
 NTL_LTER_tn_ug <- ggplot(NTL_LTER_Lake_Chemistry_PeterPaul)+
-  geom_boxplot(aes(x = forcats::fct_inorder(factor(month)), y = tn_ug, color = lakename))+
-  labs(title = "Total Nitrogen by Month for Peter and Paul Lakes", x = "Month", y = "Temperature (°C)", color = "Lake Name")+
+  geom_boxplot(aes(x = forcats::fct_inorder(factor(month)), 
+                   y = tn_ug, color = lakename))+
+  labs(title = "Total Nitrogen by Month for Peter and Paul Lakes", 
+       x = "Month", y = "Temperature (°C)", 
+       color = "Lake Name")+
     xlim("May","Jun","Jul","Aug","Sep","Oct","Nov")
   
 print(NTL_LTER_tn_ug)
@@ -137,7 +156,9 @@ NTL_LTER_combined <- plot_grid(NTL_LTER_temp + theme(legend.position = "none"),
                                align = "v"
                                )
 
-NTL_LTER_combined_1 <- cowplot::plot_grid(NTL_LTER_combined, cowplot::get_legend(NTL_LTER_temp), rel_widths = c(0.8,0.2))
+NTL_LTER_combined_1 <- cowplot::plot_grid(NTL_LTER_combined, 
+                                          cowplot::get_legend(NTL_LTER_temp), 
+                                          rel_widths = c(0.8,0.2))
 
 print(NTL_LTER_combined_1)
 ```
@@ -157,19 +178,30 @@ three facets rather than separated by color.
 
 ```{r}
 #6
-Needles_dryMass_CollectDate <- ggplot(subset(NEON_NIWO_Litter_mass_trap, functionalGroup == "Needles"))+
+Needles_dryMass_CollectDate <- ggplot(subset(NEON_NIWO_Litter_mass_trap, 
+                                             functionalGroup == "Needles"))+
         geom_point(aes(x = collectDate, y = dryMass,color = nlcdClass))+
-          labs(x = "Collect Date", y = "Dry Mass", title = "Dry Mass by Collect Date for Different NLCD Classes", color = "NLCD Class")+
-  scale_color_discrete(labels = c("Evergreen Forest", "Grassland/Herbaceous", "Shrub/Scrub"))
+          labs(x = "Collect Date", y = "Dry Mass", 
+               title = "Dry Mass by Collect Date for Different NLCD Classes", 
+               color = "NLCD Class")+
+  scale_color_discrete(labels = c("Evergreen Forest", "Grassland/Herbaceous", 
+                                  "Shrub/Scrub"))
 
 print(Needles_dryMass_CollectDate)
 
 #7
+NLCD_names <- c(
+                "evergreenForest" = "Evergreen Forest",
+                "grasslandHerbaceous" = "Grassland/Herbaceous",
+                "shrubScrub" = "Shrub/Scrub"
+)
 
-Needles_dryMass_CollectDate_faceted <- ggplot(subset(NEON_NIWO_Litter_mass_trap, functionalGroup == "Needles"))+
+Needles_dryMass_CollectDate_faceted <- ggplot(subset(NEON_NIWO_Litter_mass_trap, 
+                                                functionalGroup == "Needles"))+
         geom_point(aes(x = collectDate, y = dryMass))+
-          labs(x = "Collect Date", y = "Dry Mass", title = "Dry Mass by Collect Date for Different NLCD Classes")+
-     facet_wrap(vars(nlcdClass), nrow = 3)
+          labs(x = "Collect Date", y = "Dry Mass", 
+               title = "Dry Mass by Collect Date for Different NLCD Classes")+
+     facet_wrap(vars(nlcdClass), nrow = 3, labeller = as_labeller(NLCD_names))
 
 print(Needles_dryMass_CollectDate_faceted)
 
