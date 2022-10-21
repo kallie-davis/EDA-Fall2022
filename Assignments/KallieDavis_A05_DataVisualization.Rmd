@@ -104,7 +104,7 @@ NTL_LTER_Lake_Chemistry_PeterPaul$month <- month.abb[NTL_LTER_Lake_Chemistry_Pet
 
 NTL_LTER_temp <- ggplot(NTL_LTER_Lake_Chemistry_PeterPaul)+
   geom_boxplot(aes(x = forcats::fct_inorder(factor(month)), y = temperature_C, color = lakename))+
-  labs(x = "Month", y = "Temperature (°C)", color = "Lake Name")+
+  labs(title = "Temperature by Month for Peter and Paul Lakes", x = "Month", y = "Temperature (°C)", color = "Lake Name")+
   xlim("May","Jun","Jul","Aug","Sep","Oct","Nov")
 
 print(NTL_LTER_temp)
@@ -112,7 +112,7 @@ print(NTL_LTER_temp)
 #total phosphorus plot
 NTL_LTER_tp_ug <- ggplot(NTL_LTER_Lake_Chemistry_PeterPaul)+
   geom_boxplot(aes(x =  forcats::fct_inorder(factor(month)), y = tp_ug, color = lakename))+
-  labs(x = "Month", y = "Temperature (°C)", color = "Lake Name")+
+  labs(title = "Total Phosphorus by Month for Peter and Paul Lakes", x = "Month", y = "Temperature (°C)", color = "Lake Name")+
     xlim("May","Jun","Jul","Aug","Sep","Oct","Nov")
   
 print(NTL_LTER_tp_ug)
@@ -120,7 +120,7 @@ print(NTL_LTER_tp_ug)
 #total nitrogen plot
 NTL_LTER_tn_ug <- ggplot(NTL_LTER_Lake_Chemistry_PeterPaul)+
   geom_boxplot(aes(x = forcats::fct_inorder(factor(month)), y = tn_ug, color = lakename))+
-  labs(x = "Month", y = "Temperature (°C)", color = "Lake Name")+
+  labs(title = "Total Nitrogen by Month for Peter and Paul Lakes", x = "Month", y = "Temperature (°C)", color = "Lake Name")+
     xlim("May","Jun","Jul","Aug","Sep","Oct","Nov")
   
 print(NTL_LTER_tn_ug)
@@ -134,10 +134,12 @@ NTL_LTER_combined <- plot_grid(NTL_LTER_temp + theme(legend.position = "none"),
                                NTL_LTER_tp_ug + theme(legend.position = "none"),
                                NTL_LTER_tn_ug+ theme(legend.position = "none"), 
                                nrow = 3, ncol = 1, 
-                               align = "v")
+                               align = "v"
+                               )
 
+NTL_LTER_combined_1 <- cowplot::plot_grid(NTL_LTER_combined, cowplot::get_legend(NTL_LTER_temp), rel_widths = c(0.8,0.2))
 
-print(NTL_LTER_combined)
+print(NTL_LTER_combined_1)
 ```
 
 Question: What do you observe about the variables of interest over seasons 
@@ -157,14 +159,16 @@ three facets rather than separated by color.
 #6
 Needles_dryMass_CollectDate <- ggplot(subset(NEON_NIWO_Litter_mass_trap, functionalGroup == "Needles"))+
         geom_point(aes(x = collectDate, y = dryMass,color = nlcdClass))+
-          labs(x = "Collect Date", y = "Dry Mass")
+          labs(x = "Collect Date", y = "Dry Mass", title = "Dry Mass by Collect Date for Different NLCD Classes", color = "NLCD Class")+
+  scale_color_discrete(labels = c("Evergreen Forest", "Grassland/Herbaceous", "Shrub/Scrub"))
 
 print(Needles_dryMass_CollectDate)
 
 #7
+
 Needles_dryMass_CollectDate_faceted <- ggplot(subset(NEON_NIWO_Litter_mass_trap, functionalGroup == "Needles"))+
         geom_point(aes(x = collectDate, y = dryMass))+
-          labs(x = "Collect Date", y = "Dry Mass")+
+          labs(x = "Collect Date", y = "Dry Mass", title = "Dry Mass by Collect Date for Different NLCD Classes")+
      facet_wrap(vars(nlcdClass), nrow = 3)
 
 print(Needles_dryMass_CollectDate_faceted)
@@ -172,4 +176,4 @@ print(Needles_dryMass_CollectDate_faceted)
 ```
 Question: Which of these plots (6 vs. 7) do you think is more effective, and why? 
 
-> Answer:
+> Answer:In this case I think the non faceted figure is more effective mainly because it is easier to see where the data vary when on the same plot. The differences are small enough that it is a little challenging to spot major variations on the faceted plot. 
