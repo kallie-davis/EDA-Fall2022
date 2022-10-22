@@ -1,6 +1,6 @@
 ---
 title: "Assignment 6: GLMs (Linear Regressios, ANOVA, & t-tests)"
-author: "Kallie Davis"
+author: "Student Name"
 output: pdf_document
 geometry: margin=2.54cm
 editor_options: 
@@ -34,20 +34,10 @@ This exercise accompanies the lessons in Environmental Data Analytics on general
 
 ```{r setup}
 #1
-getwd()
 
-library(tidyverse)
-library(agricolae)
-
-NTL_LTER_Lake_ChemistryPhysics <- read.csv("./Data/Raw/NTL-LTER_Lake_ChemistryPhysics_Raw.csv", 
-         stringsAsFactors = TRUE)
 
 #2
-mytheme <- theme_bw(base_size = 13)+
-  theme(plot.title = element_text(hjust = 0), 
-        axis.text = element_text(color = "black"))
 
-theme_set(mytheme)
 
 ```
 
