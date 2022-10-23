@@ -34,20 +34,10 @@ This exercise accompanies the lessons in Environmental Data Analytics on general
 
 ```{r setup}
 #1
-getwd()
 
-library(tidyverse)
-library(agricolae)
-
-NTL_LTER_Lake_ChemistryPhysics <- read.csv("./Data/Raw/NTL-LTER_Lake_ChemistryPhysics_Raw.csv", 
-         stringsAsFactors = TRUE)
 
 #2
-mytheme <- theme_bw(base_size = 13)+
-  theme(plot.title = element_text(hjust = 0), 
-        axis.text = element_text(color = "black"))
 
-theme_set(mytheme)
 
 ```
 
@@ -56,8 +46,8 @@ Our first research question is: Does mean lake temperature recorded during July 
 
 3. State the null and alternative hypotheses for this question:
 > Answer:
-H0: 
-Ha: 
+H0: Lake mean temperature in July does not change with depth across all lakes.
+Ha: Lake mean temperature in July does change with depth across all lakes.
 
 
 4.  Wrangle your NTL-LTER dataset with a pipe function so that the records meet the following criteria: 
@@ -69,7 +59,7 @@ Ha:
 
 ```{r scatterplot}
 #4
-
+  
 
 #5
 

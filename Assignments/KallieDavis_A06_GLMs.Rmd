@@ -34,10 +34,21 @@ This exercise accompanies the lessons in Environmental Data Analytics on general
 
 ```{r setup}
 #1
+getwd()
 
+library(tidyverse)
+library(agricolae)
+library(lubridate)
+
+NTL_LTER_Lake_ChemistryPhysics <- read.csv("./Data/Raw/NTL-LTER_Lake_ChemistryPhysics_Raw.csv", 
+         stringsAsFactors = TRUE)
 
 #2
+mytheme <- theme_bw(base_size = 13)+
+  theme(plot.title = element_text(hjust = 0), 
+        axis.text = element_text(color = "black"))
 
+theme_set(mytheme)
 
 ```
 
@@ -59,10 +70,26 @@ Ha:
 
 ```{r scatterplot}
 #4
+NTL_LTER_Lake_ChemistryPhysics$sampledate <- as.Date(NTL_LTER_Lake_ChemistryPhysics$sampledate, format = "%m/%d/%y")
 
+NTL_LTER_Lake_ChemistryPhysics <- NTL_LTER_Lake_ChemistryPhysics %>% 
+  mutate(month = format(sampledate, "%m"))
+
+NTL_LTER_Lake_ChemistryPhysics$month <- as.factor(NTL_LTER_Lake_ChemistryPhysics$month)
+
+NTL_LTER_Lake_ChemistryPhysics_wrangled <- NTL_LTER_Lake_ChemistryPhysics %>% 
+  filter(month == "07") %>% 
+  select(lakename, year4, daynum, depth, temperature_C) %>% 
+  na.omit()
 
 #5
+NTL_LTER_temp_depth <- ggplot(NTL_LTER_Lake_ChemistryPhysics_wrangled, aes(x = depth, y = temperature_C))+
+  geom_point(color = "blue")+
+  ylim(0, 35)+
+  geom_smooth(method = lm, color="black")+
+  labs(title = "Temperature by Depth", x = "Depth (ft)", y = "Temperature (°C)")
 
+print(NTL_LTER_temp_depth)
 
 ```
 
