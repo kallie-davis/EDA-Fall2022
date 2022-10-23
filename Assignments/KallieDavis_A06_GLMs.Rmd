@@ -57,8 +57,8 @@ Our first research question is: Does mean lake temperature recorded during July 
 
 3. State the null and alternative hypotheses for this question:
 > Answer:
-H0: 
-Ha: 
+H0: Lake mean temperature in July does not change with depth across all lakes.
+Ha: Lake mean temperature in July does change with depth across all lakes.
 
 
 4.  Wrangle your NTL-LTER dataset with a pipe function so that the records meet the following criteria: 
@@ -87,7 +87,7 @@ NTL_LTER_temp_depth <- ggplot(NTL_LTER_Lake_ChemistryPhysics_wrangled, aes(x = d
   geom_point(color = "blue")+
   ylim(0, 35)+
   geom_smooth(method = lm, color="black")+
-  labs(title = "Temperature by Depth", x = "Depth (ft)", y = "Temperature (°C)")
+  labs(title = "Temperature by Depth", x = "Depth (m)", y = "Temperature (°C)")
 
 print(NTL_LTER_temp_depth)
 
@@ -96,22 +96,21 @@ print(NTL_LTER_temp_depth)
 
 6. Interpret the figure. What does it suggest with regards to the response of temperature to depth? Do the distribution of points suggest about anything about the linearity of this trend?
 
-> Answer: 
+> Answer: The figure, if considering the line of best fit alone, suggests a negative association between the two variables; however, if you also consider the distribution of points, it appears that this trend is nonlinear. Overall, as depth increases, the temperature appears to decrease. 73.9% of variation in temperature is explained by depth. 
 
 
 7. Perform a linear regression to test the relationship and display the results
 
 ```{r linear.regression}
 #7
-
-
+linear_regression_depth_temp <- lm(data = NTL_LTER_Lake_ChemistryPhysics_wrangled, temperature_C ~ depth)
+  summary(linear_regression_depth_temp)
 ```
 
 
 8. Interpret your model results in words. Include how much of the variability in temperature is explained by changes in depth, the degrees of freedom on which this finding is based, and the statistical significance of the result. Also mention how much temperature is predicted to change for every 1m change in depth. 
 
-> Answer:
-
+> Answer: As depth increases by one meter there is an associated decrease in temperature of 1.95 degrees celsius. The F-statistic is 2.75e4 with a degrees of freedom of 9726. The p-value is 2.2e-16 which is well below the significance value of 0.001, suggesting that there is a highly significant relationship between temperature and depth and we can reject the null hypothesis. 
 
 ---
 
@@ -125,19 +124,19 @@ Let's tackle a similar question from a different approach. Here, we want to expl
 
 ```{r temperature.model}
 #9
+temp_AIC <- lm(data = NTL_LTER_Lake_ChemistryPhysics_wrangled, temperature_C ~ year4 + daynum + depth)
 
-
+step(temp_AIC)
 
 #10
+multiple_linear_temp <- lm(data = NTL_LTER_Lake_ChemistryPhysics_wrangled, temperature_C ~ daynum + depth)
 
-
+summary(multiple_linear_temp)
 ```
 
 11. What is the final set of explanatory variables that the AIC method suggests we use to predict temperature in our multiple regression? How much of the observed variance does this model explain? Is this an improvement over the model using only depth as the explanatory variable?
 
-> Answer: 
-
-
+> Answer: AIC values increase when removing year4, daynum, and depth. This increase in AIC suggests that the removal of these variables made the model worse. In this case the removal of year resulted in a very small increase in AIC so I did not include it in the model. The magnitude of increase in AIC value when considering daynum and especially depth would make the year have very little effect overall in the model. This model explains a variance of 74.1% which is an improvement on the previous model which only uses depth to explain change in temperature. 
 
 ---
 ## Analysis of Variance
@@ -146,21 +145,25 @@ Let's tackle a similar question from a different approach. Here, we want to expl
 
 ```{r anova.model}
 #12
+temperature_lakename_anova <- aov(data = NTL_LTER_Lake_ChemistryPhysics_wrangled, temperature_C ~ lakename)
+summary(temperature_lakename_anova)
 
-
+temperature_lakename_anova_lm <- lm(data = NTL_LTER_Lake_ChemistryPhysics_wrangled, temperature_C ~ lakename)
+summary(temperature_lakename_anova_lm)
 ```
 
 13. Is there a significant difference in mean temperature among the lakes? Report your findings. 
 
-> Answer: 
-
+> Answer: A p-value of 2e-16 was achieved when running an anova test for temperature data among different lakes, meaning that there is significant difference in mean temperature among the different lakes. We do not know, however, which lakes differ in mean temperature value. 
 
 
 14. Create a graph that depicts temperature by depth, with a separate color for each lake. Add a geom_smooth (method = "lm", se = FALSE) for each lake. Make your points 50 % transparent. Adjust your y axis limits to go from 0 to 35 degrees. Clean up your graph to make it pretty. 
 
 ```{r scatterplot.2}
 #14.
-
+ggplot(NTL_LTER_Lake_ChemistryPhysics_wrangled, aes(x = depth, y = temperature_C, color = lakename))+
+  geom_point()+
+  geom_smooth()
 
 ```
 
