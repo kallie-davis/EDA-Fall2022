@@ -1,6 +1,6 @@
 ---
 title: "Assignment 6: GLMs (Linear Regressios, ANOVA, & t-tests)"
-author: "Student Name"
+author: "Kallie Davis"
 output:
   pdf_document: default
   html_document:
@@ -61,7 +61,7 @@ Our first research question is: Does mean lake temperature recorded during July 
 3. State the null and alternative hypotheses for this question:
 > Answer:
 H0: Lake mean temperature in July does not change with depth across all lakes; regression coefficient = 0.
-Ha: Lake mean temperature in July does change with depth across all lakes; regression coefficient ≠ 0.
+Ha: Lake mean temperature in July does change with depth across all lakes; regression coefficient does not equal 0.
 
 
 4.  Wrangle your NTL-LTER dataset with a pipe function so that the records meet the following criteria: 
