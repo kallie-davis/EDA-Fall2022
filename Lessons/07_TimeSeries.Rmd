@@ -77,7 +77,7 @@ River discharge is measured daily at the Eno River gage station. Since we are wo
 Let's look at what the dataset contains for mean daily discharge.
 
 ```{r}
-ggplot(EnoDischarge, aes(x = datetime, y = discharge.mean)) +
+ggplot(EnoDischarge, aes(x = datetime, y = discharge.mean)) + #First step is to plot variable over time; in this case we see a large data gap
   geom_line() +
   labs(x = "", y = expression("Discharge (ft"^3*"/s)"))
 ```
@@ -87,10 +87,10 @@ Notice there are missing data from 1971 to 1985. Gaps this large are generally a
 Let's start by removing the NAs and splitting the dataset into the early and late years. 
 
 ```{r}
-EnoDischarge.complete <- EnoDischarge %>%
+EnoDischarge.complete <- EnoDischarge %>% 
   drop_na(discharge.mean)
 
-EnoDischarge.early <- EnoDischarge.complete %>%
+EnoDischarge.early <- EnoDischarge.complete %>%  #we are splitting the dataset into early and late data to perform separate analyses
   filter(datetime < as.Date("1985-01-01"))
 
 EnoDischarge.late <- EnoDischarge.complete %>%
@@ -115,13 +115,16 @@ We first need to turn the discharge data into a time series object in R. This is
 Note: time series objects must be equispaced. In our case, we have daily data with no NAs in the data frame, so we don't need to worry about this. We will cover how to address data that are not equispaced later in the lesson.
 
 ```{r}
-EnoDischarge.late_ts <- ts(EnoDischarge.late$discharge.mean, start = c(1985,1), frequency = 365)
+EnoDischarge.late_ts <- ts(EnoDischarge.late$discharge.mean, start = c(1985,1), frequency = 365) #transform data into time series; you have to do this to use the stl function
+#365 means we are working with daily data
+head(EnoDischarge.late_ts)
 ```
 
 The `stl` function decomposes the time series object into its component parts. We must specify that the window for seasonal extraction is either "periodic" or a specific number of at least 7. The decomposition proceeds through a loess (locally estimated scatterplot smoothing) function.
 
 ```{r}
-?stl
+?stl #only univariate
+
 # Generate the decomposition
 EnoDischarge.late_Decomposed <- stl(EnoDischarge.late_ts, s.window = "periodic")
 
@@ -184,7 +187,7 @@ summary(wind_data$AWND)
 # In real applications you will simply replace NAs
 wind_data_clean <- 
   wind_data %>% 
-  mutate( AWND.clean = zoo::na.approx(AWND) )
+  mutate( AWND.clean = zoo::na.approx(AWND) ) #create column with no NA values 
 
 summary(wind_data_clean$AWND.clean)
 #Note the NA is gone
@@ -192,7 +195,8 @@ summary(wind_data_clean$AWND.clean)
 ggplot(wind_data_clean ) +
   geom_line(aes(x = DATE, y = AWND.clean), color = "red") +
   geom_line(aes(x = DATE, y = AWND), color = "black") +
-  ylab("Average Wind Speed") 
+  ylab("Average Wind Speed") #dot for the one NA is connected by the red line
+# never use NA omit or drop NA for data in the middle of the dataset; you need to use NA approx to replace
 ```
 
 ### Monotonic trend analysis, continued
@@ -219,18 +223,18 @@ Note that wind speed has a seasonal cycle. We might be interested in knowing how
 ```{r}
 
 # Generate time series (trend test needs ts, not data.frame)
-f_month <- month(first(wind_data_clean$DATE))
-f_year <- year(first(wind_data_clean$DATE))
+f_month <- month(first(wind_data_clean$DATE)) #define first month
+f_year <- year(first(wind_data_clean$DATE)) #define first year
 wind_data_ts <- ts(wind_data_clean$AWND.clean,
-                   start=c(f_year,f_month),
+                   start=c(f_year,f_month), #we make the first month and year automatic
                    frequency=12) 
 
 #decompose
 wind_data_decomp <- stl(wind_data_ts,s.window = "periodic")
-plot(wind_data_decomp)
+plot(wind_data_decomp) #now we know we are dealing with seasonal data
 
 # Run SMK test
-wind_data_trend1 <- Kendall::SeasonalMannKendall(wind_data_ts)
+wind_data_trend1 <- Kendall::SeasonalMannKendall(wind_data_ts) #null hypothesis is that the data is stationary
 
 # Inspect results
 wind_data_trend1
@@ -255,7 +259,7 @@ print(wind_data_plot)
 
 What would we conclude based on these findings? 
 
-> Answer:
+> Answer: 
 
 
 ## Forecasting with Autoregressive and Moving Average Models (ARMA)
