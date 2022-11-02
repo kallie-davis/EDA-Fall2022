@@ -45,7 +45,38 @@ mytheme <- theme_bw(base_size = 13)+
 theme_set(mytheme)
 
 #2
+GaringerOzone1 <- 
+  read.csv("./Data/Raw/Ozone_TimeSeries/EPAair_O3_GaringerNC2010_raw.csv", 
+         stringsAsFactors = TRUE)
+GaringerOzone2 <- 
+  read.csv("./Data/Raw/Ozone_TimeSeries/EPAair_O3_GaringerNC2011_raw.csv", 
+         stringsAsFactors = TRUE)
+GaringerOzone3 <- 
+  read.csv("./Data/Raw/Ozone_TimeSeries/EPAair_O3_GaringerNC2012_raw.csv", 
+         stringsAsFactors = TRUE)
+GaringerOzone4 <- 
+  read.csv("./Data/Raw/Ozone_TimeSeries/EPAair_O3_GaringerNC2013_raw.csv", 
+         stringsAsFactors = TRUE)
+GaringerOzone5 <- 
+  read.csv("./Data/Raw/Ozone_TimeSeries/EPAair_O3_GaringerNC2014_raw.csv", 
+         stringsAsFactors = TRUE)
+GaringerOzone6 <- 
+  read.csv("./Data/Raw/Ozone_TimeSeries/EPAair_O3_GaringerNC2015_raw.csv", 
+         stringsAsFactors = TRUE)
+GaringerOzone7 <- 
+  read.csv("./Data/Raw/Ozone_TimeSeries/EPAair_O3_GaringerNC2016_raw.csv", 
+         stringsAsFactors = TRUE)
+GaringerOzone8 <- 
+  read.csv("./Data/Raw/Ozone_TimeSeries/EPAair_O3_GaringerNC2017_raw.csv", 
+         stringsAsFactors = TRUE)
+GaringerOzone9 <- 
+  read.csv("./Data/Raw/Ozone_TimeSeries/EPAair_O3_GaringerNC2018_raw.csv", 
+         stringsAsFactors = TRUE)
+GaringerOzone10 <- 
+  read.csv("./Data/Raw/Ozone_TimeSeries/EPAair_O3_GaringerNC2019_raw.csv", 
+         stringsAsFactors = TRUE)
 
+GaringerOzone <- rbind(GaringerOzone1, GaringerOzone2, GaringerOzone3, GaringerOzone4, GaringerOzone5, GaringerOzone6, GaringerOzone7, GaringerOzone8, GaringerOzone9, GaringerOzone10)
 ```
 
 ## Wrangle
@@ -60,13 +91,18 @@ theme_set(mytheme)
 
 ```{r}
 # 3
+GaringerOzone$Date <- as.Date(GaringerOzone$Date, format = "%m/%d/%Y")
 
 # 4
+GaringerOzone <- select(GaringerOzone, Date, Daily.Max.8.hour.Ozone.Concentration, DAILY_AQI_VALUE)
 
 # 5
+Days <- as.data.frame(seq(from = as.Date("2010-01-01"), to = as.Date("2019-12-31"), "days"))
+Days <- Days %>% 
+  rename(Date = 1)
 
 # 6
-
+GaringerOzone_test <- left_join(Days, GaringerOzone)
 
 ```
 
