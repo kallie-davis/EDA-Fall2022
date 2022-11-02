@@ -169,7 +169,11 @@ head(GaringerOzone.monthly.ts)
 
 ```{r}
 #11
+GaringerOzone.daily_Decomposed <- stl(GaringerOzone.daily.ts, s.window = "periodic")
+plot(GaringerOzone.daily_Decomposed)
 
+GaringerOzone.monthly_Decomposed <- stl(GaringerOzone.monthly.ts, s.window = "periodic")
+plot(GaringerOzone.monthly_Decomposed)
 
 ```
 
@@ -178,26 +182,29 @@ head(GaringerOzone.monthly.ts)
 
 ```{r}
 #12
+GaringerOzone.monthly_trend <- Kendall::SeasonalMannKendall(GaringerOzone.monthly.ts)
 
-
-
+GaringerOzone.monthly_trend
 ```
 
-> Answer: 
+> Answer: The data we are working with is seasonal and the other tests cannot handle seasonal data. The seasonal Mann Kendall test is the only one which can evaluate seasonal data. 
 
 13. Create a plot depicting mean monthly ozone concentrations over time, with both a geom_point and a geom_line layer. Edit your axis labels accordingly.
 
 ```{r}
 # 13
-
-
-
-
+GaringerOzone.monthly_plot <-
+ggplot(GaringerOzone.monthly, aes(x = Date, y = OzoneConcentration)) +
+  geom_point() +
+  geom_line() +
+  ylab("Average Ozone Concentration") +
+  geom_smooth( method = lm )
+print(GaringerOzone.monthly_plot)
 ```
 
 14. To accompany your graph, summarize your results in context of the research question. Include output from the statistical test in parentheses at the end of your sentence. Feel free to use multiple sentences in your interpretation.
 
-> Answer: 
+> Answer: There appears to be a very slight decline in ozone concentration from 2010 to 2019 when looking at the graph. However, the seasonal Mann Kendall test had a p-value above 0.05 so we fail to reject the null hypothesis which states that the data is stationary (tau = -0.1, 2-sided p-value = 0.163). 
 
 15. Subtract the seasonal component from the `GaringerOzone.monthly.ts`. Hint: Look at how we extracted the series components for the EnoDischarge on the lesson Rmd file.
 
@@ -205,14 +212,13 @@ head(GaringerOzone.monthly.ts)
 
 ```{r}
 #15
-
-
+GaringerOzone_remove.seasonal <- (GaringerOzone.monthly.ts - GaringerOzone.monthly_Decomposed$time.series[,1])
 
 #16
+GaringerOzone.monthly.remove.seasonal_trend <- Kendall::MannKendall(GaringerOzone_remove.seasonal)
 
-
-
+GaringerOzone.monthly.remove.seasonal_trend
 
 ```
 
-> Answer: 
+> Answer: When removing the seasonal data from the monthly series, the p-value decreased but it is still not below 0.05; we continue to fail to reject the null hypothesis (tau = -0.101, 2-sided p-value = 0.104)
