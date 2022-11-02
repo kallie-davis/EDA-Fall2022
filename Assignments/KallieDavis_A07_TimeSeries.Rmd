@@ -102,8 +102,7 @@ Days <- Days %>%
   rename(Date = 1)
 
 # 6
-GaringerOzone_test <- left_join(Days, GaringerOzone)
-
+GaringerOzone <- left_join(Days, GaringerOzone)
 ```
 
 ## Visualize
@@ -112,10 +111,12 @@ GaringerOzone_test <- left_join(Days, GaringerOzone)
 
 ```{r}
 #7
-
+ggplot(GaringerOzone, aes(x=Date, y=Daily.Max.8.hour.Ozone.Concentration))+
+  geom_line()+
+  geom_smooth()
 ```
 
->Answer:
+>Answer: The plot suggests a small decrease in ozone concentration over time.
 
 ## Time Series Analysis
 
@@ -125,17 +126,30 @@ Study question: Have ozone concentrations changed over the 2010s at this station
 
 ```{r}
 #8
-
+GaringerOzone <- 
+  GaringerOzone %>% 
+  mutate(OzoneConcentration = zoo::na.approx(Daily.Max.8.hour.Ozone.Concentration) ) 
 ```
 
-> Answer: 
-
+> Answer: We want to fill the data gap by connecting the nearest points for ozone concentration. spline uses a quadradic function to connect these points and piecewise constant fills the gap with a neighboring value; neither of these functions would make sense to fill the data gap here. 
 
 9. Create a new data frame called `GaringerOzone.monthly` that contains aggregated data: mean ozone concentrations for each month. In your pipe, you will need to first add columns for year and month to form the groupings. In a separate line of code, create a new Date column with each month-year combination being set as the first day of the month (this is for graphing purposes only)
 
 ```{r}
 #9
+GaringerOzone.monthly <- GaringerOzone %>% 
+  mutate(month = format(Date, "%m")) %>% 
+  mutate(year = format(Date, "%Y")) %>% 
+  group_by(month, year) %>% 
+  summarise(OzoneConcentration = mean(OzoneConcentration))
 
+GaringerOzone.monthly <- GaringerOzone.monthly %>% 
+ mutate(day = 01)
+
+GaringerOzone.monthly <- GaringerOzone.monthly %>% 
+  mutate(Date = paste(year, month, day, sep="-")) 
+
+GaringerOzone.monthly$Date <- as.Date(GaringerOzone.monthly$Date, format = "%Y-%m-%d")
 ```
 
 
@@ -143,7 +157,11 @@ Study question: Have ozone concentrations changed over the 2010s at this station
 
 ```{r}
 #10
+GaringerOzone.daily.ts <- ts(GaringerOzone$OzoneConcentration, start = c(2010,1), frequency = 365)
+head(GaringerOzone.daily.ts)
 
+GaringerOzone.monthly.ts <- ts(GaringerOzone.monthly$OzoneConcentration, start = c(2010,1), frequency = 12)
+head(GaringerOzone.monthly.ts)
 ```
 
 
