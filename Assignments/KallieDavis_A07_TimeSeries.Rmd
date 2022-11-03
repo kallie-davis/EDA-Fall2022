@@ -96,9 +96,11 @@ GaringerOzone <- rbind(GaringerOzone1, GaringerOzone2,
 ```{r}
 # 3
 GaringerOzone$Date <- as.Date(GaringerOzone$Date, format = "%m/%d/%Y")
+class(GaringerOzone$Date)
 
 # 4
 GaringerOzone <- select(GaringerOzone, Date, Daily.Max.8.hour.Ozone.Concentration, DAILY_AQI_VALUE)
+head(GaringerOzone)
 
 # 5
 Days <- as.data.frame(seq(from = as.Date("2010-01-01"), to = as.Date("2019-12-31"), "days"))
@@ -107,6 +109,7 @@ Days <- Days %>%
 
 # 6
 GaringerOzone <- left_join(Days, GaringerOzone)
+str(GaringerOzone)
 ```
 
 ## Visualize
@@ -115,10 +118,12 @@ GaringerOzone <- left_join(Days, GaringerOzone)
 
 ```{r}
 #7
-ggplot(GaringerOzone, aes(x=Date, y=Daily.Max.8.hour.Ozone.Concentration))+
+GaringerOzonge_plot <- ggplot(GaringerOzone, aes(x=Date, y=Daily.Max.8.hour.Ozone.Concentration))+
   geom_line()+
   geom_smooth()+
   labs(y = "Ozone Concentration")
+
+print(GaringerOzonge_plot)
 ```
 
 >Answer: The plot suggests a small decrease in ozone concentration over time.
