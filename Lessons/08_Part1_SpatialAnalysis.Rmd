@@ -33,7 +33,7 @@ library(tidyverse, quietly = TRUE)
 library(lubridate)
 
 #install.packages('sf')
-library(sf)
+library(sf)                 #we are looking at vector data
 #install.packages('leaflet')
 library(leaflet)
 #install.packages('mapview')
@@ -74,12 +74,12 @@ Let's read some geospatial data into our coding environment. The file we'll read
 
 ```{r Read in road data}
 #Read a spatial dataset
-GasPlants <- st_read('https://opendata.arcgis.com/datasets/a0722062315143a7980cebb79a204781_4.geojson')
+GasPlants <- st_read('https://opendata.arcgis.com/datasets/a0722062315143a7980cebb79a204781_4.geojson') #st_read can read GeoJSON format off the web
 #Alternative
 #GasPlants <- st_read('./Data/Spatial/Manufactured_Gas_Plant_Sites.geojson')
 
 #Explore
-class(GasPlants)
+class(GasPlants) # is a dataframe but is also an sf object
 names(GasPlants)
 str(GasPlants$geometry)
 
@@ -107,7 +107,7 @@ EPAair <- read.csv("./Data/Processed/EPAair_O3_PM25_NC2021_Processed.csv", strin
 EPAair.sites <- EPAair %>% 
   group_by(Site.Name, COUNTY, SITE_LATITUDE, SITE_LONGITUDE) %>% 
   summarize(
-    mean_Ozone = mean(Ozone, na.rm=T),    #What does "na.rm=T" do? Is it necessary?
+    mean_Ozone = mean(Ozone, na.rm=T),    #What does "na.rm=T" do? Is it necessary? This excludes NA values when calculating descriptive stats in R
     mean_PM25 = mean(PM2.5, na.rm=T),
     count_all = n(),
     count_Ozone = sum(!is.na(Ozone)),
@@ -115,7 +115,7 @@ EPAair.sites <- EPAair %>%
 
 #Convert to a spatial dataframe
 EPAair.sf <- EPAair.sites %>% 
-  st_as_sf(coords = c('SITE_LONGITUDE','SITE_LATITUDE'),
+  st_as_sf(coords = c('SITE_LONGITUDE','SITE_LATITUDE'), #creating a geometry feature; longitude is x, lat is y; we specify crs
            crs=4326)
 
 #View the data using the methods above...
@@ -126,17 +126,17 @@ EPAair.sf <- EPAair.sites %>%
 
 ```{r Create a spatial dataframe from scratch}
 #First create a simple feature geometry object ("sfg")
-sfg_GraingerHall <- st_point(c(-78.9427,36.00465))
+sfg_GraingerHall <- st_point(c(-78.9427,36.00465)) #this is a simple feature coordinate with no reference where it should go
 class(sfg_GraingerHall)
 mapview(sfg_GraingerHall)
 
 #Upgrade to a simple feature geometry column by adding a crs 
-sfc_GraingerHall <- st_sfc(sfg_GraingerHall,crs=4326)
+sfc_GraingerHall <- st_sfc(sfg_GraingerHall,crs=4326) #this is a simple feature column
 class(sfc_GraingerHall)
 mapview(sfc_GraingerHall)
 
 #Upgrade to a spatial dataframe
-sf_GraingerHall <- st_as_sf(sfc_GraingerHall)
+sf_GraingerHall <- st_as_sf(sfc_GraingerHall) #simple feature table or dataframe by adding attributes
 sf_GraingerHall$Name = 'Grainger Hall'
 mapview(sf_GraingerHall)
 
