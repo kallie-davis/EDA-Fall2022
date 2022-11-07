@@ -156,7 +156,7 @@ Let's explore:
 "Buffering" a simple feature extends the area outward a specified distance. The code below buffers Grainger Hall 1 "unit". 
 ```{r buffer Grainger hall}
 #Buffer Grainger Hall 1 unit
-the_buffer <- sf_GraingerHall %>% st_buffer(1)
+the_buffer <- sf_GraingerHall %>% st_buffer(1) #buffer by one degree lat and long - looks odd because we are buffering in spherical coordinates
 
 #View the result
 mapview(the_buffer)
@@ -177,6 +177,7 @@ The "solution" to these issues involves creating a vast number of different coor
 1. A mathematical representation of the earth's shape, often constrained to a specific extent to enhance accuracy at that extent (at the cost of increased distortion away from that extent). These representations are referred to as the `datums`, `spheroids`, or `ellipsoids` of a specific coordinate reference system. 
 
 2. A coordinate system, defined by the units of measurement (either angular [degrees], or planar [meters or feet]), and the location of its origin. Projected coordinate systems tend to be more accurate at their origin, with distortion increasing as you move away; thus you'd want to select a coordinate reference system who's origin is closest to the features in your analysis. 
+- Notes: Universal transverse Mercator (projected coordinate system) divided into zones. NC is in zone 17. The origin of the coordinate system falls pretty close to NC. Distortion will be lessened closer to the origin. Distance units are in meters.
 
 All simple features need to be associated with a defined coordinate reference system. The crs can be *geographic*, where coordinate values remain in angular units, or *project* where the angular units have been translated into planar ones using some form of projection method. The crs associated with the simple features provides critical information for processing spatial analyses such as computing distances, calculating areas, etc. It also enables datasets using one crs to be **transformed** into another crs so that analyses can be done across spatial datasets.  
 
@@ -184,6 +185,8 @@ All simple features need to be associated with a defined coordinate reference sy
 ## 3.2  EPSG codes and "PROJ4Strings"
 
 The "4326" in the `crs = 4326` is an EPSG code, a number used to look up a specific crs.
+
+EPSG.io to look up coord ref systems
 
 The website <http://spatialreference.org/> lists hundreds of standard CRS along with a map and description of where it's appropriate. For example, a useful one in North Carolina is [UTM Zone 17N-NAD 83](http://spatialreference.org/ref/epsg/nad83-utm-zone-17n/). Note also that its *EPSG code* is `26917`; this EPSG code one way we can assign a CRS to our data. If you click on the the "Well Known Text as HTML" link, it will reveal all the specific associated with that CRS... (Another site listing coordinate reference systems is <http://www.epsg.org/>)
 
@@ -236,7 +239,7 @@ ggplot() +
   geom_sf(data = GasPlants.utm,color='red',shape='O') 
 
 #Create a distance matrix between the point in each dataset
-distance_matrix <- st_distance(EPAair.sf.utm, GasPlants.utm, pairwise=T)
+distance_matrix <- st_distance(EPAair.sf.utm, GasPlants.utm, pairwise=T) 
 
 #Compute the mean of each row (each EPA site)
 mean_distances <-  rowMeans(distance_matrix)
