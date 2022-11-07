@@ -73,7 +73,7 @@ epa_pm25_sites_sf <- read_csv('./Data/Raw/EPAair_PM25_NC2018_raw.csv') %>%
 class(epa_pm25_sites_sf)
 
 #What is its CRS again?
-st_crs(epa_pm25_sites_sf)$epsg
+st_crs(epa_pm25_sites_sf)$epsg 
 
 #Plot the data
 ggplot(data=epa_pm25_sites_sf) +
@@ -104,7 +104,7 @@ st_crs(counties_sf)
 nrow(counties_sf)
 
 #Reveal the extent of this dataset via the st_bbox() function
-st_bbox(counties_sf)
+st_bbox(counties_sf) #creates a bounding box around the feature
 
 #View the data
 head(counties_sf)
@@ -119,20 +119,20 @@ mapView(counties_sf, zcol = "AWATER")
 
 ```{r read HUCs shapefile}
 #Read the shapefile into an sf dataframe named "huc8_sf"
-
+huc8_sf <- st_read('./Data/Spatial/NCHUC8.shp')
 
 #Reveal the columns
-
+colnames(huc8_sf)
 
 #Check the CRS
-
+st_crs(huc8_sf)
 
 #Examine some records
 head(huc8_sf)
 
 #View the data as a map, colored by the acreage in each
 
-
+mapview(huc8_sf, zcol = "ACRES")
 
 
 ```
@@ -143,13 +143,12 @@ head(huc8_sf)
 
 ```{r Select the Upper Neuse HUC 8}
 #Read the shapefile into an sf dataframe
-
-
+huc8_sf_UppnerNeuse <- st_read('./Data/Spatial/NCHUC8.shp') %>% 
+  filter(SUBBASIN == 'Upper Neuse')
 
 #Create a map
-
-
-
+mapview(huc8_sf, col.regions = 'orange')+
+  mapview(huc8_sf_UppnerNeuse, col.regions = 'purple')+
 
 ```
 
@@ -192,6 +191,7 @@ nc_powerplants_sf <- nc_powerplants_sf %>%
 ggplot(nc_powerplants_sf) + 
   geom_sf(aes(color = PRIM_FUEL)) 
 
+mapview(nc_powerplants_sf)
 ```
 
 # 3. WORKING WITH SPATIAL DATA
@@ -211,14 +211,14 @@ We'll focus on just a few variables: Estimates of people in poverty ("E_POV") an
 ```{r join.attributes.to.spatial features}
 #Read the 2018 SVI county-level dataset for NC
 svi2018_nc_raw <- read.csv(
-  'https://svi.cdc.gov/Documents/Data/2018_SVI_Data/CSV/States_Counties/NorthCarolina_COUNTY.csv',
-  colClasses = c('FIPS' = 'factor')) %>% 
+  'https://svi.cdc.gov/Documents/Data/2018_SVI_Data/CSV/States_Counties/NorthCarolina_COUNTY.csv', #this is a tabular dataset
+  colClasses = c('FIPS' = 'factor')) %>%  #this specifies FIPS column needs to be imported as a factor (this is important because we do not want to lose leading zero)
   select(COUNTY, FIPS, LOCATION, E_TOTPOP, E_POV, E_MINRTY)
 
 #Check structure
 str(svi2018_nc_raw)
 
-#Join the SVI attributes to the county spatial features
+#Join the SVI attributes to the county spatial features - this is the base r version of a join
 counties_sf_join <-  merge(x = counties_sf,
                            y = svi2018_nc_raw, 
                            by.x = "GEOID", 
@@ -246,21 +246,20 @@ ggplot() +
 
 ```{r}
 #Compute HUC8 wind energy
-
-
-
-
-
+huc8 <- read.csv('https://raw.githubusercontent.com/ENV859/EnviroAtlasData/main/Wind_Energy.csv',
+                  colClasses = c('HUC_12'='factor')) %>% 
+  mutate(HUC_8 = substr(HUC_12,1,8)) %>% 
+  group_by(HUC_8) %>% 
+  summarise(kWhkm2day = sum(kWhkm2day))
   
 #Join to HUC_8 features
 
-
-
-
+huc8_sf_wind <- huc8_sf %>% 
+  left_join(huc8, by = c('HUC_8' = 'HUC_8'))
 
 #View the outputs
 
-
+mapview(huc8_sf_wind, zcol = 'kWhkm2day')
 
 
 
@@ -278,7 +277,7 @@ In our case, all of our county features share the same "STATEFP" value, so we'll
 #Aggregate the data using group_by and summarize, just as you would a non-spatial dataframe
 state_sf <- counties_sf %>% 
   group_by('STATEFP') %>% 
-  summarize(ALAND = sum(ALAND))
+  summarize(ALAND = sum(ALAND)) #calculating total land area of NC
 
 #View the data
 mapview(state_sf)
