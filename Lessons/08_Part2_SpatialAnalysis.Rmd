@@ -148,7 +148,7 @@ huc8_sf_UppnerNeuse <- st_read('./Data/Spatial/NCHUC8.shp') %>%
 
 #Create a map
 mapview(huc8_sf, col.regions = 'orange')+
-  mapview(huc8_sf_UppnerNeuse, col.regions = 'purple')+
+  mapview(huc8_sf_UppnerNeuse, col.regions = 'purple')
 
 ```
 
@@ -248,7 +248,7 @@ ggplot() +
 #Compute HUC8 wind energy
 huc8 <- read.csv('https://raw.githubusercontent.com/ENV859/EnviroAtlasData/main/Wind_Energy.csv',
                   colClasses = c('HUC_12'='factor')) %>% 
-  mutate(HUC_8 = substr(HUC_12,1,8)) %>% 
+  mutate(HUC_8 = substr(HUC_12,1,8)) %>% #substr allows you to take the first 8 values of the value
   group_by(HUC_8) %>% 
   summarise(kWhkm2day = sum(kWhkm2day))
   
