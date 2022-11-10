@@ -126,6 +126,10 @@ colnames(NWIS_gage.sf)
 
 ```{r Plot the spatial features}
 #13. Plot the gage locations atop the county features
+ggplot()+
+  geom_sf(data = Nebraska.counties_sf, fill = "orange", alpha = 0.5)+
+  geom_sf(data = NWIS_gage.sf, color = "blue")+
+  labs(title = "NWIS Gage Locations in Nebraska", subtitle = "Kallie Davis")
 
 
 ```
@@ -145,13 +149,16 @@ Lastly, we want to attach some gage height data to our site locations. I've cons
 
 ```{r}
 #14. Read the site flow data into a data frame
-
+NWIS_SiteFlowData_NE <- read.csv('./Data/Raw/NWIS_SiteFlowData_NE_RAW.csv')
 
 #15. Show the column names
-
+colnames(NWIS_SiteFlowData_NE)
 
 #16. Join the flow data to our NWIS gage location spatial dataframe
-
+NWIS_NE_sf_join <-  merge(x = counties_sf,
+                           y = svi2018_nc_raw, 
+                           by.x = "GEOID", 
+                           by.y = "FIPS" )
 
 #17. Show the column names of the joined dataset
 
