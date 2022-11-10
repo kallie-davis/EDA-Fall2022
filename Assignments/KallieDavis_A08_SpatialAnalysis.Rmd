@@ -59,13 +59,15 @@ Nebraska.counties_sf <- counties_sf.df %>%
 #4. Reveal the CRS of the counties features
 st_crs(Nebraska.counties_sf) 
 
+st_crs(Nebraska.counties_sf)$epsg
+
 #5. Plot the data
 mapview(Nebraska.counties_sf)
 ```
 
 6. What is the EPSG code of the Counties dataset? Is this a geographic or a projected coordinate reference system? (Or, does this CRS use angular or planar coordinate units?) To what datum is this CRS associated? (Tip: look the EPSG code on <https://spatialreference.org>) 
 
-> ANSWER: 
+> ANSWER: The EPSG code is 4269. This is a geographic coordinate system (it uses angular coordinate units) and is associated with North American Datum 1983.
 > 
 
 
@@ -79,15 +81,15 @@ Next we'll read in some USGS/NWIS gage location data added to the `Data/Raw` fol
 
 ```{r Read in USGS Gage Locations}
 #7. Read in gage locations csv as a dataframe
-
+NWIS_gage <- read.csv('./Data/Raw/NWIS_SiteInfo_NE_RAW.csv')
 
 #8. Reveal the names of the columns
-
+colnames(NWIS_gage)
 
 ```
 
 9. What columns in the dataset contain the x and y coordinate values, respectively?  
-> ANSWER:
+> ANSWER: The dec_long_va contains the x coordinate and dec_lat_va contains the y coordinate
 > 
 
 
