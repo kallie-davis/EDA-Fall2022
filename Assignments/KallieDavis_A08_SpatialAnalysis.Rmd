@@ -81,7 +81,7 @@ Next we'll read in some USGS/NWIS gage location data added to the `Data/Raw` fol
 
 ```{r Read in USGS Gage Locations}
 #7. Read in gage locations csv as a dataframe
-NWIS_gage <- read.csv('./Data/Raw/NWIS_SiteInfo_NE_RAW.csv')
+NWIS_gage <- read.csv('./Data/Raw/NWIS_SiteInfo_NE_RAW.csv', stringsAsFactors = TRUE)
 
 #8. Reveal the names of the columns
 colnames(NWIS_gage)
@@ -102,16 +102,18 @@ colnames(NWIS_gage)
 
 ```{r Convert dataframe to sf dataframe}
 #10. Convert to an sf object
-
+NWIS_gage.sf <- NWIS_gage %>% 
+  st_as_sf(coords = c('dec_long_va','dec_lat_va'), 
+           crs=4269)
 
 #11. Re-examine the column names
-
+colnames(NWIS_gage.sf)
 
 ```
 
 12. What new field(s) appear in the sf dataframe created? What field(s), if any, disappeared?
 
->ANSWER: 
+>ANSWER: geometry is a new column in the sf dataframe. The dec_long_va and dec_lat_va were combined to create the geometry column, so both of these fields have disappeared. 
 >
 
 
