@@ -1,11 +1,13 @@
 ---
-title: "Assignment 8: Spatial Analysis in R"
+title: 'Assignment 8: Spatial Analysis in R'
 author: "Kallie Davis"
-output: pdf_document
+output:
+  html_document:
+    df_print: paged
 geometry: margin=2.54cm
-editor_options: 
+editor_options:
   chunk_output_type: console
-  markdown: 
+  markdown:
     wrap: 72
 ---
 
@@ -51,7 +53,7 @@ In this exercise, we will be exploring stream gage height data in Nebraska corre
 
 ```{r Read the county data into an sf dataframe}
 #3. Read in Counties shapefile into an sf dataframe, filtering for just NE counties
-counties_sf.df <- st_read('./Data/Spatial/cb_2018_us_county_20m.shp')
+counties_sf.df <- st_read('../Data/Spatial/cb_2018_us_county_20m.shp')
 
 Nebraska.counties_sf <- counties_sf.df %>% 
   filter(STATEFP == "31")
@@ -81,7 +83,9 @@ Next we'll read in some USGS/NWIS gage location data added to the `Data/Raw` fol
 
 ```{r Read in USGS Gage Locations}
 #7. Read in gage locations csv as a dataframe
-NWIS_gage <- read.csv('./Data/Raw/NWIS_SiteInfo_NE_RAW.csv', stringsAsFactors = TRUE)
+NWIS_gage <- read.csv('../Data/Raw/NWIS_SiteInfo_NE_RAW.csv', 
+                      stringsAsFactors = TRUE,
+                      )
 
 #8. Reveal the names of the columns
 colnames(NWIS_gage)
@@ -149,22 +153,24 @@ Lastly, we want to attach some gage height data to our site locations. I've cons
 
 ```{r}
 #14. Read the site flow data into a data frame
-NWIS_SiteFlowData_NE <- read.csv('./Data/Raw/NWIS_SiteFlowData_NE_RAW.csv')
+NWIS_SiteFlowData_NE <- read.csv('../Data/Raw/NWIS_SiteFlowData_NE_RAW.csv',
+                                 stringsAsFactors = TRUE)
 
 #15. Show the column names
 colnames(NWIS_SiteFlowData_NE)
 
 #16. Join the flow data to our NWIS gage location spatial dataframe
-NWIS_NE_sf_join <-  merge(x = counties_sf,
-                           y = svi2018_nc_raw, 
-                           by.x = "GEOID", 
-                           by.y = "FIPS" )
+NWIS_NE_sf_join <-  merge(x = NWIS_gage.sf,
+                           y = NWIS_SiteFlowData_NE, 
+                           by.x = "site_no", 
+                           by.y = "site_no" )
+
 
 #17. Show the column names of the joined dataset
-
+colnames(NWIS_NE_sf_join)
 
 #18. Show the dimensions of this joined dataset
-
+dim(NWIS_NE_sf_join)
 
 ```
 
@@ -176,7 +182,11 @@ Now we can examine where the flooding appears most acute by visualizing gage hei
 
 ```{r}
 #Map the points, sized by gage height
-
+mapview(Nebraska.counties_sf, col.regions = "orange")+
+  mapview(NWIS_NE_sf_join,
+        cex = "gage_ht",
+        zcol = "gage_ht",
+        alpha.regions=1)
 
 ```
 
@@ -195,9 +205,14 @@ Up next we will do some spatial analysis with our data. To prepare for this, we 
 ```{r}
 #20 Transform the counties and gage location datasets to UTM Zone 14
 
+Nebraska.counties_sf_utm <- st_transform(Nebraska.counties_sf, crs = 32614)
+
+NWIS_gage.sf_join_utm <- st_transform(NWIS_NE_sf_join, crs = 32614)
+
 
 #21 Plot the data
-
+mapview(Nebraska.counties_sf_utm, col.regions = "orange")+
+  mapview(NWIS_gage.sf_join_utm, col.regions = "blue", alpha.regions =1)
 
 ```
 
@@ -215,13 +230,18 @@ Now let's zoom into a particular county and examine the gages located there.
 
 ```{r}
 #22 Select the county
-
+Lancaster_sf_utm <- Nebraska.counties_sf_utm %>% 
+  filter(NAME =="Lancaster")
 
 #23 Select gages within the selected county
-
+Lancaster_gages_intersect_sf <- NWIS_gage.sf_join_utm[Lancaster_sf_utm,]
 
 #24 Plot
-
+mapview(Nebraska.counties_sf_utm, col.regions = "orange")+
+mapview(Lancaster_sf_utm,
+                col.regions = "red", 
+                alpha.regions = 0.3)+
+  mapview(Lancaster_gages_intersect_sf, alpha.regions=1)
 
 
 ```
