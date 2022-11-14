@@ -40,6 +40,8 @@ Web scraping is the process of pulling data directly from websites. Copy and pas
 ### Some important caveats
 You might now feel that web scraping isn't always legitimate - and you're right! Not all content providers want their sites to be scraped. To ensure that your web scraping is done ethically, check out this great article covering the ethics and legality of web scraping: <https://prowebscraper.com/blog/is-web-scraping-legal/>
 
+you can type /robots.txt at the end of a url to see if a site has one. Can disallow you to scrape certain data, so this means they do not want you to scrape the data.
+
 
 > For discussion: Can you give examples of ethical and unethical web scraping?
 
@@ -73,6 +75,8 @@ EXERCISE: Open the source of the web page in your browser (<ctrl>-<u>).
 
 HTML files follow a syntax of **tags** (what falls beteween the `<` and `>`) and **values**. Tags can indicate what kind of hyper-text element it is, and they can also include **properties** such as "id" and "class" to which specific **property values** can be assigned. This is important to know at some level, because it's this system of tags, properties, and property values that allow us to target specific elements in a web page so that we can scrape the data we want. You'll also see that items are hierarchical with some items (e.g. <table> containing other items <tr>).
 
+Hit ctrl U to open the data source. A webpage is just an html which instructs what to show and how to show it which is interpreted by your browser software. 
+"< >" indicate a tag (e.g., <head> this is a head tag)
 
 ## 1.3 Scraping the data
 Now we want to scrape some data shown in the page into our R coding environment. The bits we want to scrape are:
@@ -104,7 +108,7 @@ In the code chunk below, see if you can extract the Facility Name and Facility T
 
 ```{r scraping.exercise.1}
 the_facility_name <- webpage %>% 
-  html_nodes("tr:nth-child(2) th+ .left:nth-child(2)") %>% 
+  html_nodes("tr:nth-child(2) th+ .left:nth-child(2)") %>% #Unique node ID for the facility name tr:nth-child(2) th+ .left:nth-child(2)
   html_text()
 the_facility_name
 
@@ -121,11 +125,11 @@ Below is the code to extract average daily withdrawls. Add your code to extract 
 avg_withdrawals <- webpage %>% 
   html_nodes('.table:nth-child(7) td:nth-child(7) , .table:nth-child(7) td:nth-child(3)') %>%
   html_text()
-avg_withdrawals
+avg_withdrawals #always pulls values as characters, so this shows up as a character vector
 
 max_withdrawals <- webpage %>% 
   html_nodes('.table:nth-child(7) td:nth-child(8) , .table:nth-child(7) td:nth-child(4)') %>%
-  html_text()
+  html_text()  #.table:nth-child(7) td:nth-child(8) , .table:nth-child(7) td:nth-child(4)
 max_withdrawals
 ```
 
@@ -135,14 +139,14 @@ max_withdrawals
 Now that we've scraped the data we want into our coding environment, the next step is to wrangle these data into formats we can work with more easily, i.e. a dataframe. Here, we emply the techniques we've learned earlier in this class to do this and then plot the data. 
 ```{r create.dataframe.from.scrapings}
 #Create a dataframe of withdrawals
-df_withdrawals <- data.frame("Month" = rep(1:12),
-                             "Year" = rep(2000,12),
-                             "Avg_Withdrawals_mgd" = as.numeric(avg_withdrawals),
+df_withdrawals <- data.frame("Month" = rep(1:12), #rep command creates a sequence of numbers one through 12
+                             "Year" = rep(2000,12), #make a vector of 12 repeats of the number 2000
+                             "Avg_Withdrawals_mgd" = as.numeric(avg_withdrawals), #convert to numeric
                              "Max_Withdrawals_mgd" = as.numeric(max_withdrawals))
 
 #Modify the dataframe to include the facility name and type as well as the date (as date object)
 df_withdrawals <- df_withdrawals %>% 
-  mutate(Registrant = !!the_registrant,
+  mutate(Registrant = !!the_registrant, #!! (bang bang) indicates reference to a variable, do not refer to a string
          Facility_name = !!the_facility_name,
          Facility_type = !!the_facility_type,
          Date = my(paste(Month,"-",Year)))
