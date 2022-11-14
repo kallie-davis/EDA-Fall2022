@@ -175,7 +175,7 @@ This begins by setting the parameters of the page we'll be scraping to variables
 the_base_url <- 'https://www.ncwater.org/WUDC/app/WWATR/report/view'
 the_facility <- '0004-0001'
 the_year <- 2015
-the_scrape_url <- paste0(the_base_url, '/', the_facility, '/', the_year)
+the_scrape_url <- paste0(the_base_url, '/', the_facility, '/', the_year) #paste0 eliminates space when adding to a string
 print(the_scrape_url)
 
 #Retrieve the website contents 
@@ -206,7 +206,7 @@ df_withdrawals <- data.frame("Month" = rep(1:12),
 ggplot(df_withdrawals,aes(x=Date,y=Avg_Withdrawals_mgd)) + 
   geom_line() + 
   geom_smooth(method="loess",se=FALSE) +
-  labs(title = paste("2020 Water usage data for",the_registrant),
+  labs(title = paste(the_year,"Water usage data for",the_registrant),
        subtitle = the_facility_name,
        y="Withdrawal (mgd)",
        x="Date")
@@ -258,7 +258,7 @@ scrape.it <- function(the_year, the_facility){
 
 ```{r test.the.function}
 #Run the function
-the_df <- scrape.it(2018,'0004-0001')
+the_df <- scrape.it(2015,'0004-0001')
 view(the_df)
 
 ```
@@ -272,14 +272,14 @@ my_facility = '0004-0001'
 
 #Use lapply to apply the scrape function
 the_dfs <- lapply(X = the_years,
-                  FUN = scrape.it,
-                  the_facility=my_facility)
+                  FUN = scrape.it, #repeat "scrape.it" function for each value of x with the specific facility ID
+                  the_facility=my_facility) #this variable is satic in this case
 
 #OR, use purrr's map function
-the_dfs <- map(the_years,scrape.it,the_facility=my_facility)
+the_dfs <- map(the_years,scrape.it,the_facility=my_facility) #does same thing as lapply; uses map function instead
 
 #Conflate the returned dataframes into a single dataframe
-the_df <- bind_rows(the_dfs)
+the_df <- bind_rows(the_dfs) #tidyverse version of rbind
 
 #Plot, because it's fun and rewarding
 ggplot(the_df,aes(x=Date,y=Avg_Withdrawals_mgd)) + 
@@ -311,7 +311,7 @@ the_main_website <- read_html(the_main_url)
 #Then extract all the nodes associated with this and rather than extracting them 
 the_facility_ids <- the_main_website %>% 
   html_nodes('#content a') %>%    #Extract a list of html nodes taged with "content a"
-  html_attr("href") %>%           #Pull the "href" attribute from the node
+  html_attr("href") %>%           #Pull the "href" attribute from the node; changed from html_text which will just show the text not the attribute
   str_split("/") %>%              #Split the html address into substrings, separated by "/"
   map_chr(.,9)                    #Extract the 9th item in the above, which is the facility ID
 
@@ -329,13 +329,13 @@ This website gives a nice example of this: <https://dcl-prog.stanford.edu/purrr-
 ```{r Scrape.all.2020.data}
 
 #Subset the facilities
-the_facility_ids_subset <-  sample(the_facility_ids,20)
+the_facility_ids_subset <-  sample(the_facility_ids,20) #subset 20
 
 #Create a list of the year we want, the same length as the vector above
-the_years <- rep.int(2020,length(the_facility_ids_subset))
+the_years <- rep.int(2020,length(the_facility_ids_subset)) #create a list of years that match the length of facility IDs
 
 #"Map" the "scrape.it" function to retrieve data for all these
-dfs_2020 <- map2(the_years, the_facility_ids_subset, scrape.it) 
+dfs_2020 <- map2(the_years, the_facility_ids_subset, scrape.it) #map2 iterates through lists in parallel
 
 #Conflate the returned list of dataframes into a single one
 df_2020 <- bind_rows(dfs_2020)
