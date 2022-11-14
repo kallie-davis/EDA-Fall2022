@@ -358,7 +358,7 @@ the_years = c(2018,2019,2020)
 
 #Use the cross2 function to generate a list of unique combos of year and facility ids
 #Then send apply our scrape.it function to grab values into a list of dataframes
-the_df <- cross2(the_years,the_facilities) %>% 
+the_df <- cross2(the_years,the_facilities) %>% #cross2 generates a list of lists
   map(lift(scrape.it)) %>% 
   bind_rows()
 
